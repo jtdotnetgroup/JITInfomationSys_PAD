@@ -72,5 +72,10 @@ export const asyncRouterMap = [
     name: 'BarCode',
     meta: { permission: 'TouchPad.BarCode', icon: './imgs/icons/L_Scan.png', title: '条码打印', secTitle: '待检验', key: 'TMDY', count: 0 },
     component: () => import('../views/BarCode/index.vue')
+  }, {
+    path: '/YQTY',
+    name: 'YQTY',
+    meta: { icon: './imgs/icons/L_Stock3.png', title: '余数打包', secTitle: '余数', key: 'YQTY', count: 0 },
+    redirect: '/home'
   }
 ]
