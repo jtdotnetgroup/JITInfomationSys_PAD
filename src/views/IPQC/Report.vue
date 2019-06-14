@@ -13,7 +13,7 @@
       <el-col :span="4">
         <div class="grid-content">
           <div class="demo-input-suffix">
-            <el-input v-model=" this.$route.query.fBillNo" disabled="disabled" placeholder="请输检验单号"></el-input>
+            <el-input v-model=" this.$route.query.FBillNo" disabled="disabled" placeholder="请输检验单号"></el-input>
           </div>
         </div>
       </el-col>
@@ -37,7 +37,7 @@
       <el-col :span="4">
         <div class="grid-content">
           <div class="demo-input-suffix">
-            <el-input v-model="from.FBillNo" disabled="disabled" placeholder="请输入批号"></el-input>
+            <el-input v-model="from.BatchNum" disabled="disabled" placeholder="请输入批号"></el-input>
           </div>
         </div>
       </el-col>
@@ -93,8 +93,6 @@
 <script>
 // 数据处理
 import { GetMx, DataAddOrPUT, GetAll } from '@/api/mission'
-//
-import columns from './TestingtableColumns.js'
 // 派工单页面
 export default {
   name: 'IPQC',
@@ -106,9 +104,10 @@ export default {
       tabvalue: 'ZJHB',
       from: {
         FID: 0,
+        FBillNo: '',
         FItemID: 0,
         Step: '',
-        FBillNo: '',
+        BatchNum: '',
         汇报数: 0,
         FOperID: 0
       },
@@ -260,9 +259,9 @@ export default {
           return t.key === 'FCheckAuxQty'
         })[0].num
         // 合格数
-        var FPassAuxQty = this.AllCol[0].Col.filter(t => {
-          return t.key === 'FPassAuxQty'
-        })[0].num
+        // var FPassAuxQty = this.AllCol[0].Col.filter(t => {
+        //   return t.key === 'FPassAuxQty'
+        // })[0].num
         // 不合格数
         var FFailAuxQty = this.AllCol[0].Col.filter(t => {
           return t.key === 'FFailAuxQty'
@@ -314,7 +313,9 @@ export default {
           _this.AllCol[2].Col.push()
         })
         .catch(function () {
+        }).finally(function () {
           _this.loading = false
+          _this.Detailed()
         })
     },
     // 返回上一层
@@ -325,7 +326,7 @@ export default {
     OnSubmit () {
       var _this = this
 
-      if (_this.from.FBillNo.length === 0) {
+      if (_this.from.BatchNum.length === 0) {
         _this.$message({
           showClose: true,
           message: '批号不能为空！',
@@ -337,7 +338,6 @@ export default {
         icmoInspectBill: {
           fid: _this.from.FID,
           fOperID: _this.from.FOperID,
-          fBillNo: _this.from.FBillNo,
           fAuxQty: _this.AllCol[0].Col[0].num,
           fCheckAuxQty: _this.AllCol[0].Col[1].num,
           fPassAuxQty: _this.AllCol[0].Col[2].num,
@@ -386,7 +386,6 @@ export default {
       var obj = {
         fid: this.from.FID,
         fItemID: this.from.FItemID,
-        fBillNo: this.from.FBillNo,
         fOperID: this.from.FOperID
       }
       GetMx('ICMOInspectBill/ICMOInspectBillDetailed', obj)
@@ -629,9 +628,9 @@ export default {
     this.from.Step = this.$route.query.Step
     this.from.汇报数 = this.$route.query.FAuxQty
     this.from.FOperID = this.$route.query.FOperID
+    this.from.BatchNum = this.$route.query.BatchNum
     this.from.FBillNo = this.$route.query.FBillNo
     this.GetTB_BadItemRelation()
-    this.Detailed()
   },
   //
   computed: {

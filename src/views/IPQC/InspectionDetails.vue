@@ -48,9 +48,11 @@
 <script>
 // 列
 // 数据处理
-import { GetAll, DataPUT, DataAddOrPUT } from '@/api/mission'
+import { GetAll } from '@/api/mission'
 const column = [
-  { id: 'fBillNo', label: '检验单号', width: 200, sort: false, align: 'center' },
+  { id: 'FBillNo', label: '检验单号', width: 200, sort: false, align: 'center' },
+  { id: 'Step', label: '工序', width: 80, sort: false, align: 'center' },
+  { id: 'BatchNum', label: '批次号', width: 200, sort: false, align: 'center' },
   { id: 'FStatus', label: '状态', width: 100, sort: false, align: 'center' },
   { id: 'FAuxQty', label: '汇报数', width: 100, sort: false, align: 'center' },
   { id: 'FCheckAuxQty', label: '检验数', width: 100, sort: false, align: 'center' },
@@ -123,8 +125,9 @@ export default {
       obj.Step = this.$route.query.Step
       obj.FItemID = this.$route.query.FItemID
       obj.FOperID = this.$route.query.FOperID
-      obj.FBillNo = this.$route.query.FBillNo
+      obj.FBillNo = row.FBillNo
       obj.F_102 = this.$route.query.F_102
+      obj.BatchNum = row.BatchNum
       switch (type) {
         // 修改汇报
         case 0:
@@ -151,9 +154,11 @@ export default {
           if (res.data.success) {
             var DS = []
             var result = res.data.result
+            var Step = this.$route.query.Step
             result.forEach(item => {
               var tmp = {}
-              tmp.fBillNo = item.fBillNo
+              tmp.Step = Step
+              tmp.FBillNo = item.fBillNo
               tmp.FStatus = item.fStatus === 1 ? '已检验' : '待检验'
               tmp.FAuxQty = item.fAuxQty
               tmp.FCheckAuxQty = item.fCheckAuxQty
@@ -171,6 +176,7 @@ export default {
                   : _this.$moment(item.fInspectTime).format('YYYY-MM-DD HH:mm')
               tmp.FNote = item.fNote
               tmp.FID = item.fid
+              tmp.BatchNum = item.batchNum
               DS.push(tmp)
             })
             _this.DataSource = DS

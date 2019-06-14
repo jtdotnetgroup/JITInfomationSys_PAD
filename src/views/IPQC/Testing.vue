@@ -50,7 +50,7 @@
 <!-- 脚本 -->
 <script>
 // 数据处理
-import { GetAll, DataAddOrPUT, DataPUT, DataPUT2 } from '@/api/mission'
+import { GetAll, DataPUT2 } from '@/api/mission'
 // 表格的列
 import columns from './TestingtableColumns.js'
 // 派工单页面
@@ -223,6 +223,7 @@ export default {
             TabaleObj.FBillNo = item.派工单号
             TabaleObj.FItemID = item.fItemID
             TabaleObj.F_102 = item.f_102
+            // TabaleObj.批次号 = item.batchNum
             TableList.push(TabaleObj)
           })
           // 重新渲染列表

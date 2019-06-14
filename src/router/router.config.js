@@ -76,7 +76,7 @@ export const asyncRouterMap = [
   {
     path: '/YSQty',
     name: 'YSQty',
-    meta: { permission: 'TouchPad.BarCode', icon: './imgs/icons/L_Stock3.png', title: '余数', secTitle: '余数项目', key: 'YSQty', count: 0 },
+    meta: { permission: 'TouchPad.BarCode', icon: './imgs/icons/L_Stock3.png', title: '余数', secTitle: '余数项目', key: 'BZYS', count: 0 },
     component: () => import('../views/YSQty/index.vue')
   }
 ]
