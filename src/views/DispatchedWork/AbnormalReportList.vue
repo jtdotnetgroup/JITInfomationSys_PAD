@@ -47,11 +47,7 @@
 // 列
 // 数据处理
 import {
-  GetAll,
-  DataPUT,
-  DataAddOrPUT,
-  AddOrPUT,
-  DataAdd
+  GetAll
 } from '@/api/mission'
 const column = [
   { id: 'fRemark', label: '异常原因', width: 200, sort: false },
@@ -131,7 +127,7 @@ export default {
         // 修改异常
         case 0:
           obj = { FID: row.FID, FSrcID: row.FSrcID }
-          this.$refs.AbnormalReport.show(obj)
+          _this.$refs.AbnormalReport.show(obj)
           break
         // 默认提示功能尚未开发
         default:
@@ -140,8 +136,9 @@ export default {
     },
     // 添加异常
     AddICException () {
-      var obj = { FSrcID: this.from.FID }
-      this.$refs.AbnormalReport.show(obj)
+      var _this = this
+      var obj = { FSrcID: _this.from.FID }
+      _this.$refs.AbnormalReport.show(obj)
     },
     // 获取数据源
     GetDataSource (obj) {
@@ -159,11 +156,11 @@ export default {
               tmp.fRecoverTime =
                 item.fRecoverTime === null
                   ? ''
-                  : _this.$moment(item.fRecoverTime).format('YYYY-MM-DD hh:mm')
+                  : _this.$moment(item.fRecoverTime).format('YYYY-MM-DD HH:mm')
               tmp.fTime =
                 item.fTime === null
                   ? ''
-                  : _this.$moment(item.fTime).format('YYYY-MM-DD hh:mm')
+                  : _this.$moment(item.fTime).format('YYYY-MM-DD HH:mm')
               tmp.FID = item.fid
               tmp.FSrcID = item.fSrcID
               DS.push(tmp)
