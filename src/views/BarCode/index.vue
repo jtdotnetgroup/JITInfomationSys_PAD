@@ -32,6 +32,10 @@ export default {
 
     },
     PreviewTest () {
+      const tester = {
+        Name: 'Test',
+        Age: 18
+      }
       winForm.Preview()
     }
   },

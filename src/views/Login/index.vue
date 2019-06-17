@@ -24,8 +24,8 @@
 </template>
 
 <script>
-import axios from 'axios'
-import { UserInfo } from '@/config/UserInfo.js'
+// import axios from 'axios'
+// import { UserInfo } from '@/config/UserInfo.js'
 // Vue.use(axios);
 export default {
   name: 'login',
@@ -47,7 +47,7 @@ export default {
   },
   methods: {
     onSubmit () {
-      var _this = this
+      // var _this = this
       this.$refs['form'].validate(valid => {
         if (valid) {
           this.fullscreenLoading = true
@@ -57,7 +57,6 @@ export default {
               password: this.form.password
             })
             .then(res => {
-              _this.fullscreenLoading = false
               // console.log(res)
               // 登录成功
               setTimeout(() => {
@@ -66,8 +65,10 @@ export default {
             })
             .catch(() => {
               // 登录失败
-              _this.fullscreenLoading = false
-                 Message.error('抱歉，服务器处理请求异常')
+              this.$message.error('抱歉，服务器处理请求异常')
+            })
+            .finally(() => {
+              this.fullscreenLoading = false
             })
         } else {
         }
