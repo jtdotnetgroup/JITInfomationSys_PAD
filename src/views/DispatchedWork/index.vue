@@ -62,7 +62,7 @@
 
 <script>
 // 数据处理
-import { GetAll, DataPUT, DataAddOrPUT } from '@/api/mission'
+import { GetAll, DataAddOrPUT } from '@/api/mission'
 // 表格列
 import columns from './tableColumns.js'
 // 派工单页面
@@ -186,20 +186,20 @@ export default {
                       type: 'success'
                     })
                     _this.GetData()
-                    setTimeout(() => {
-                      _this.fullscreenLoading = false
-                    }, 2000)
                   } else {
                     this.$message.error('标记开工失败')
-                    setTimeout(() => {
-                      _this.fullscreenLoading = false
-                    }, 2000)
+                    setTimeout(() => {}, 2000)
                   }
                 })
                 .catch(function () {
+                  setTimeout(() => {}, 2000)
+                })
+                .finally(() => {
                   setTimeout(() => {
                     _this.fullscreenLoading = false
                   }, 2000)
+                  _this.$store.dispatch('GetAllTaskQty', { StrKey: '*' })
+                  _this.UpdCount()
                 })
             })
             .catch(() => {})
@@ -283,9 +283,9 @@ export default {
             item.count =
               item.value === _this.tabvalue ? result.totalCount : item.count
           })
-          loading.close()
         })
-        .catch(function () {
+        .catch(function () {})
+        .finally(() => {
           loading.close()
         })
     },

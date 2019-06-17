@@ -11,6 +11,8 @@
         :key="col.id"
         :label="col.label"
         :width="col.width"
+        :type="col.type"
+        :align='col.align'
       ></el-table-column>
       <!-- <el-table-column label="操作">
         <template>
@@ -39,14 +41,15 @@ import { GetAll } from '@/api/mission'
 const columns = [
   // 派工任务单号，批号，余数，派单人
   // A.FBillNo,A.FBiller,A.FDate,B.FBillNo,B.BatchNum,B.FYSQty,B.FInspector,B.FInspectTime
-  { id: 'FBillNo', label: '派工任务单号', width: 220, sort: false },
-  { id: 'FBiller', label: '派工人', width: 120, sort: false },
-  { id: 'FDate', label: '派工日期', width: 180, sort: false },
-  { id: 'FBillNo2', label: '检测单号', sort: false },
-  { id: 'BatchNum', label: '批次号', sort: false },
-  { id: 'FYSQty', label: '余数', sort: false },
-  // { id: 'FInspector', label: '检验人', sort: false },
-  { id: 'FInspectTime', label: '检验时间', sort: false }
+  { id: 'FBillNo', label: '选择', width: 55, sort: false, type: 'selection', align: 'center' },
+  { id: 'FBillNo', label: '派工任务单号', width: 220, sort: false, type: '' },
+  { id: 'FBiller', label: '派工人', width: 100, sort: false, type: '' },
+  { id: 'FDate', label: '派工日期', width: 160, sort: false, type: '' },
+  { id: 'FBillNo2', label: '检测单号', sort: false, type: '' },
+  { id: 'BatchNum', label: '批次号', sort: false, type: '' },
+  { id: 'FYSQty', label: '余数', width: 80, sort: false, type: '' },
+  { id: 'FInspector', label: '检验人', width: 100, sort: false },
+  { id: 'FInspectTime', label: '检验时间', width: 160, sort: false, type: '' }
 ]
 // 派工单页面
 export default {

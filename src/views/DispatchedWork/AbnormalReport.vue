@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="异常报告" :visible.sync="AbnormalReport" width="30%" v-loading="loading">
+  <el-dialog title="异常报告" :visible.sync="AbnormalReport" width="30%" v-loading="loading" append-to-body="true">
     <el-form ref="from" :model="from">
       <el-form-item label="异常原因：" prop="FRemark">
         <el-radio-group v-model="from.FRemark">
@@ -31,7 +31,7 @@
 
 <script>
 //
-import { GetAll, DataPUT, DataAddOrPUT } from '@/api/mission'
+import { GetAll, DataAddOrPUT } from '@/api/mission'
 export default {
   data () {
     return {

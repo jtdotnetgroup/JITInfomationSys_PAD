@@ -167,11 +167,16 @@ export default {
               type: 'success'
             })
           }
-          _this.loading = false
         })
         .catch(function () {
-          _this.loading = false
           _this.$message.error('操作失败，请稍后重试！')
+        })
+        .finally(() => {
+          setTimeout(() => {
+            _this.loading = false
+          }, 2000)
+          _this.$store.dispatch('GetAllTaskQty', { StrKey: '*' })
+          _this.UpdCount()
         })
     },
     GetData () {
