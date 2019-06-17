@@ -4,19 +4,19 @@ import { resolve, reject } from 'q'
 const account = {
   namespaced: true,
   state: {
-    accessToken: sessionStorage.getItem('token'), // 从localStoreage中读取
-    username: sessionStorage.getItem('username'), // 从localStoreage中读取
+    accessToken: localStorage.getItem('token'), // 从localStoreage中读取
+    username: localStorage.getItem('username'), // 从localStoreage中读取
     empname: '',
     permissions: ''
   },
   mutations: {
     UPDATE_ACCESSTOKEN (state, payload) {
       state.accessToken = payload
-      sessionStorage.setItem('token', payload)// 写入localStoreage中，解决刷新后由于token丢失重回到登录页面的问题
+      localStorage.setItem('token', payload)// 写入localStoreage中，解决刷新后由于token丢失重回到登录页面的问题
     },
     UPDATE_USERNAME (state, payload) {
       state.username = payload
-      sessionStorage.setItem('username', payload)
+      localStorage.setItem('username', payload)
     },
     UPDATE_EMPNAME (state, payload) {
       state.empname = payload
@@ -31,8 +31,8 @@ const account = {
         .then(res => {
           var data = res.data
           if (!data.error) {
-            sessionStorage.setItem('token', data.result.accessToken)
-            sessionStorage.setItem('name', data.result.userName)
+            localStorage.setItem('token', data.result.accessToken)
+            localStorage.setItem('name', data.result.userName)
             commit('UPDATE_ACCESSTOKEN', data.result.accessToken)
             commit('UPDATE_USERNAME', payload.username)
             resolve()
@@ -45,8 +45,8 @@ const account = {
       commit('UPDATE_ACCESSTOKEN', '')
       commit('UPDATE_USERNAME', '')
       commit('SET_PERMISSIONS', {})
-      sessionStorage.removeItem('token')
-      sessionStorage.removeItem('name')
+      localStorage.removeItem('token')
+      localStorage.removeItem('name')
     },
 
     GetInfo ({ commit }) {

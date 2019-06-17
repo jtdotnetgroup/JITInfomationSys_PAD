@@ -17,6 +17,8 @@ if (url.indexOf('http://222.72.134.71') >= 0) {
 } else if (url.indexOf('localhost') >= 0) {
   // 开发环境
   baseURL = 'http://localhost:21021'
+} else {
+  baseURL = 'http://222.72.134.71:8093'
 }
 // console.log(baseURL)
 const http = axios.create({
@@ -64,7 +66,7 @@ const err = (error) => {
 http.interceptors.request.use(function (config) {
   // console.log('dsaasd')
 
-  var token = sessionStorage.getItem('token')
+  var token = localStorage.getItem('token')
   if (token) {
     sessionStorage.setItem('token', token)
     // console.log('interceptors' + sessionStorage.token)

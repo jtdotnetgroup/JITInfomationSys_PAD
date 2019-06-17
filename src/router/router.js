@@ -11,8 +11,6 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  console.log('routes', router)
-
   var token = store.getters.token
 
   if (token) {
@@ -36,9 +34,9 @@ router.beforeEach((to, from, next) => {
               // 当前要访问的页面是否有重定向，如果有则跳转到重定向路由，没有则跳转到to页面
               const redirect = decodeURIComponent(from.query.redirect || to.path)
               if (to.path === redirect) {
-                next({...to, replace: true})
+                next({ ...to, replace: true })
               } else {
-                next({path: redirect})
+                next({ path: redirect })
               }
             })
         })
@@ -55,7 +53,7 @@ router.beforeEach((to, from, next) => {
     if (to.path === '/login') {
       next()
     } else {
-      next({path: '/login', query: { redirect: to.fullPath }})
+      next({ path: '/login', query: { redirect: to.fullPath } })
     }
   }
 })
