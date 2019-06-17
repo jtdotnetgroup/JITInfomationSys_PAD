@@ -8,6 +8,13 @@ export function GetAll (url, params) {
     params: params
   })
 }
+export function GetAll2 (url, params) {
+  return axios({
+    url: baseUrl + url,
+    method: 'POST',
+    data: params
+  })
+}
 // 获取明细
 export function GetMx (url, params) {
   return axios({

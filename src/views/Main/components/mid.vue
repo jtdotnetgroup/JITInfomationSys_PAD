@@ -29,17 +29,26 @@ export default {
   methods: {
     ...mapActions({
       getList: 'menus/getList'
-    })
+    }),
+    RefreshTaskQty () {
+      this.$store.dispatch('GetAllTaskQty', { StrKey: '*' })
+      console.log('s')
+    },
+    UpdateTaskQty () {
+
+    }
   },
   mounted () {
     this.getList()
+    this.$nextTick(function () {
+      setInterval(this.RefreshTaskQty, 15000)
+    })
   },
   beforeCreate () {
     this.$store.dispatch('GetAllTaskQty', { StrKey: '*' })
   },
   created () {
-    var TaskQty = this.$store.state.TaskQty.TaskQty
-    console.log(TaskQty)
+    // var TaskQty = this.$store.state.TaskQty.TaskQty
   },
   computed: {
     username () {

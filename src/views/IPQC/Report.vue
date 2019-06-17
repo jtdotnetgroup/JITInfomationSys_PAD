@@ -92,7 +92,7 @@
 </template>
 <script>
 // 数据处理
-import { GetMx, DataAddOrPUT, GetAll } from '@/api/mission'
+import { GetMx, DataAddOrPUT, GetAll, GetAll2 } from '@/api/mission'
 // 派工单页面
 export default {
   name: 'IPQC',
@@ -312,8 +312,8 @@ export default {
           _this.TB_BadItemRelation = result
           _this.AllCol[2].Col.push()
         })
-        .catch(function () {
-        }).finally(function () {
+        .catch(function () {})
+        .finally(function () {
           _this.loading = false
           _this.Detailed()
         })
@@ -366,16 +366,17 @@ export default {
       // return;
       DataAddOrPUT('ICMOInspectBill/ICMODispBillSave', obj)
         .then(res => {
-          _this.$message({
-            message: '提交成功',
-            type: 'success'
-          })
           if (res.data.success) {
+            _this.$message({
+              message: '提交成功',
+              type: 'success'
+            })
+            _this.Printing()
             _this.Cancel()
           }
-          _this.loading = false
         })
-        .catch(function () {
+        .catch(function () {})
+        .finally(() => {
           _this.loading = false
         })
     },
@@ -519,7 +520,6 @@ export default {
               )
             } else {
               _this.TB_BadItemRelation.forEach(tmp => {
-                console.log(tmp.fDeleted)
                 var IsShow = !tmp.fDeleted
                 var FItemID = tmp.fid
                 var FName = tmp.fName
@@ -574,9 +574,6 @@ export default {
           var result = res.data.result
           _this.TB_BadItemRelation = result
           _this.TB_BadItemRelation.forEach(tmp => {
-            console.log(
-              'GetTB_BadItemRelation_SeticQualityRptsList' + tmp.fDeleted
-            )
             var IsShow = tmp.fDeleted
             var FItemID = tmp.fid
             var FName = tmp.fName
@@ -619,7 +616,19 @@ export default {
     //
     handelTabChange (value) {},
     sizeChange (value) {},
-    currentChange (value) {}
+    currentChange (value) {},
+    // 打印
+    Printing () {
+      var obj = { FID: [this.$route.query.FID] }
+      GetAll2('Printing/GetAllPrinting', obj)
+        .then(res => {
+          if (res.data.success) {
+            // winForm.Preview(JSON.stringify(res.data.result))
+          }
+        })
+        .catch(() => {})
+        .finally(() => {})
+    }
   },
   // 页面渲染前 执行
   created: function () {
@@ -631,6 +640,7 @@ export default {
     this.from.BatchNum = this.$route.query.BatchNum
     this.from.FBillNo = this.$route.query.FBillNo
     this.GetTB_BadItemRelation()
+    this.Printing()
   },
   //
   computed: {
