@@ -623,7 +623,7 @@ export default {
       GetAll2('Printing/GetAllPrinting', obj)
         .then(res => {
           if (res.data.success) {
-            // winForm.Preview(JSON.stringify(res.data.result))
+             winForm.Preview(JSON.stringify(res.data.result[0]))
           }
         })
         .catch(() => {})
