@@ -50,7 +50,7 @@
     </el-row>
     <!-- 所有项目列表 -->
     <el-row :gutter="0" class="bbtbt" v-loading="loading">
-      <el-col :span="8" class="btbt" v-for="(tmp,index2) in AllCol" :key="index2" style="overflow: auto; max-height: 70vh;">
+      <el-col :span="8" class="btbt" v-for="(tmp,index2) in AllCol" :key="index2">
         <!-- 项目名称以及数量 -->
         <div class="grid-content">
           <el-row :gutter="0" class="text-bule">
