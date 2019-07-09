@@ -24,9 +24,7 @@
 </template>
 
 <script>
-// import axios from 'axios'
 // import { UserInfo } from '@/config/UserInfo.js'
-// Vue.use(axios);
 export default {
   name: 'login',
   data () {
@@ -57,13 +55,15 @@ export default {
               password: this.form.password
             })
             .then(res => {
-              // console.log(res)
               // 登录成功
               setTimeout(() => {
+                this.$router.push('/')
                 this.$router.push('/')
               }, 500)
             })
             .catch(() => {
+              Message.error('抱歉，服务器处理请求异常')
+            }).finally(() => {
               // 登录失败
               this.$message.error('抱歉，服务器处理请求异常')
             })

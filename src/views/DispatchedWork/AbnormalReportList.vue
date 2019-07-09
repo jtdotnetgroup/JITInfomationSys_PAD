@@ -52,8 +52,8 @@ import {
 const column = [
   { id: 'fRemark', label: '异常原因', width: 200, sort: false },
   { id: 'fBiller', label: '报告人', width: 90, sort: false },
-  { id: 'fRecoverTime', label: '报告时间', width: 160, sort: false },
-  { id: 'fTime', label: '回复时间', width: 160, sort: false }
+  { id: 'fTime', label: '报告时间', width: 160, sort: false },
+  { id: 'fRecoverTime', label: '回复时间', width: 160, sort: false }
 ]
 //
 export default {

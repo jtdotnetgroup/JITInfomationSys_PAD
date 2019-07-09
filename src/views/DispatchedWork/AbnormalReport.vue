@@ -113,9 +113,13 @@ export default {
             // 异常
             if (result != null) {
               this.from.FBiller = result.fBiller
-              this.from.FTime = result.fTime
+              this.from.FTime =result.fTime === null
+                  ? ''
+                  : _this.$moment(result.fTime).format('YYYY-MM-DD HH:mm')
               this.from.FRemark = result.fRemark
-              this.from.FRecoverTime = result.fRecoverTime
+              this.from.FRecoverTime =  result.fRecoverTime === null
+                  ? ''
+                  : _this.$moment(result.fRecoverTime).format('YYYY-MM-DD HH:mm')
               this.from.FNote = result.fNote
             } else {
               _this.$refs['from'].resetFields()
