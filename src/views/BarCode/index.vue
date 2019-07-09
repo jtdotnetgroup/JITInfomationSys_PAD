@@ -32,11 +32,17 @@ export default {
 
     },
     PreviewTest () {
-      const tester = {
-        Name: 'Test',
-        Age: 18
-      }
-      winForm.Preview()
+      const tester = [
+  {
+    "itemNum": "12313132",
+    "itemName": "Name123123",
+    "lotNum": "Lot12312313",
+    "qty": 1230,
+    "qrCode": "code123123123",
+    "packQty": 123
+  }
+]
+      winForm.Preview(JSON.stringify(tester))
     }
   },
   computed: {
