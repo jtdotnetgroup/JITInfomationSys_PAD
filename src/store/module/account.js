@@ -33,7 +33,7 @@ const account = {
           if (!data.error) {
             localStorage.setItem('token', data.result.accessToken)
             localStorage.setItem('name', data.result.userName)
-            winForm.User = data.result.userName
+            // winForm.User = data.result.userName
             commit('UPDATE_ACCESSTOKEN', data.result.accessToken)
             commit('UPDATE_USERNAME', payload.username)
             resolve()
