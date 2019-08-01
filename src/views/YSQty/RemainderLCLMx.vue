@@ -40,99 +40,99 @@
       <el-button @click="AbnormalReport = false">取消</el-button>
     </div>
     <!-- 打开数字键盘 以及接受回调 -->
-    <Digital ref="Digital" @DigitalCallback="DigitalCallback"/>
+    <Digital ref="Digital" @DigitalCallback="DigitalCallback" />
   </el-dialog>
 </template>
 
 <script>
 //
-import { GetAll, DataAddOrPUT } from "@/api/mission";
+import { GetAll, DataAddOrPUT } from '@/api/mission'
 export default {
-  name: "LCL",
+  name: 'LCL',
   components: {
-    Digital: () => import("@/components/Common/Digital.vue")
+    Digital: () => import('@/components/Common/Digital.vue')
   },
-  data() {
+  data () {
     return {
       loading: false,
       AbnormalReport: false,
       dataSource: {}
-    };
+    }
   }, // 声明方法
   methods: {
-    getSummaries(param) {
-      const { columns, data } = param;
-      const sums = [];
+    getSummaries (param) {
+      const { columns, data } = param
+      const sums = []
       columns.forEach((column, index) => {
         if (index === 0) {
-          sums[index] = "合计";
-          return;
+          sums[index] = '合计'
+          return
         }
-        const values = data.map(item => Number(item[column.property]));
+        const values = data.map(item => Number(item[column.property]))
         if (!values.every(value => isNaN(value))) {
           sums[index] = values.reduce((prev, curr) => {
-            const value = Number(curr);
+            const value = Number(curr)
             if (!isNaN(value)) {
-              return prev + curr;
+              return prev + curr
             } else {
-              return prev;
+              return prev
             }
-          }, 0);
-          sums[index] += "";
+          }, 0)
+          sums[index] += ''
         } else {
-          sums[index] = "";
+          sums[index] = ''
         }
         if (index === 1 || index === 2) {
-          sums[index] = "";
+          sums[index] = ''
         }
-      });
+      })
 
-      return sums;
+      return sums
     },
     // 打开键盘
-    DigitalOpen(index, tmp, num) {
+    DigitalOpen (index, tmp, num) {
       var obj = {
-        width: "30%",
+        width: '30%',
         num: num,
-        title: "拼箱数量",
-        placeholder: "拼箱数量" + num,
+        title: '拼箱数量',
+        placeholder: '拼箱数量' + num,
         tmp: tmp,
         index: index
-      };
-      this.$refs.Digital.show(obj);
+      }
+      this.$refs.Digital.show(obj)
     },
     // 键盘回调并且关闭键盘
-    DigitalCallback(obj) {
+    DigitalCallback (obj) {
       this.$nextTick(() => {
         var num =
           this.dataSource[obj.tmp.FItemName][obj.index].FYSQty * 1 < obj.num * 1
             ? this.dataSource[obj.tmp.FItemName][obj.index].FYSQty * 1
-            : obj.num * 1;
-        this.dataSource[obj.tmp.FItemName][obj.index].PS = num;
+            : obj.num * 1
+        this.dataSource[obj.tmp.FItemName][obj.index].PS = num
         this.dataSource[obj.tmp.FItemName][obj.index].SY =
           this.dataSource[obj.tmp.FItemName][obj.index].FYSQty -
-          this.dataSource[obj.tmp.FItemName][obj.index].PS;
+          this.dataSource[obj.tmp.FItemName][obj.index].PS
         // 由于UI框架问题，所以下面选项时必须的
-        this.dataSource[obj.tmp.FItemName][obj.index].FYSQty++;
-        this.dataSource[obj.tmp.FItemName][obj.index].FYSQty--;
-      });
+        this.dataSource[obj.tmp.FItemName][obj.index].FYSQty++
+        this.dataSource[obj.tmp.FItemName][obj.index].FYSQty--
+      })
       // this.$nextTick(()=>{
       //   this.dataSource = this.dataSource
       // })
-      this.$refs.Digital.hide();
+      this.$refs.Digital.hide()
     },
-    show(obj) {
-      this.AbnormalReport = true;
-      this.dataSource = {};
-      console.log(obj);
+    show (obj) {
+      this.AbnormalReport = true
+      this.dataSource = {}
+      console.log(obj)
       for (var i = 0; i < obj.length; i++) {
-        var ai = obj[i];
-        ai.PS = 0;
-        ai.SY = ai.FYSQty;
+        var ai = obj[i]
+        ai.PS = 0
+        ai.SY = ai.FYSQty
         if (!this.dataSource[ai.FItemName]) {
-          this.dataSource[ai.FItemName] = [ai]; //依赖分组字段可自行更改！
+          this.dataSource[ai.FItemName] = [ai] // 依赖分组字段可自行更改！
         } else {
-          this.dataSource[ai.FItemName].push(ai);
+          this.dataSource[ai.FItemName].push(ai)
         }
       }
       // console.log(this.dataSource);
@@ -140,91 +140,98 @@ export default {
       //   map[item.key]
       // });
     },
-    hide() {
-      this.AbnormalReport = false;
+    hide () {
+      this.AbnormalReport = false
     },
     // 提交
-    onSubmit(type) {
-      var _this = this;
+    onSubmit (type) {
+      var _this = this
       switch (type) {
-        case "OK": {
-          break;
+        case 'OK': {
+          break
         }
         default: {
-          break;
+          break
         }
       }
       // 检验
-      var KeyObj = [];
+      var KeyObj = []
       for (var key in this.dataSource) {
-        var obj = {};
-        obj.key = key;
-        obj.ZS = 0;
+        var obj = {}
+        obj.key = key
+        obj.ZS = 0
         this.dataSource[key].forEach(tmp => {
-          obj.BZS = tmp.F_102;
+          obj.BZS = tmp.F_102
           if (tmp.PS > 0) {
-            obj.ZS += tmp.PS;
+            obj.ZS += tmp.PS
           }
-        });
-        KeyObj.push(obj);
+        })
+        KeyObj.push(obj)
       }
-      var TF = true;
+      //
+      var TF = true
       KeyObj.forEach(item => {
         if (item.PS < item.ZS) {
           this.$notify.error({
-            title: "系统提示",
-            message: item.key + "的拼箱数量合计不是整箱"
-          });
-          TF = false;
-          return;
+            title: '系统提示',
+            message: item.key + '的拼箱数量合计不是整箱'
+          })
+          TF = false
+          return
         }
-        console.log(item.ZS % item.BZS);
+        console.log(item.ZS % item.BZS)
         if (item.ZS % item.BZS !== 0) {
           this.$notify.error({
-            title: "系统提示",  
-            message: item.key + "的拼箱数量合计不是整箱"
-          });
-        TF = false;
-        return;
+            title: '系统提示',
+            message: item.key + '的拼箱数量合计不是整箱'
+          })
+          TF = false
         }
-        
-      });
+      })
       if (!TF) {
-        return;
+        return
       }
       // 开始传数据
-      this.loading = true;
-      var objtmp = [];
-      var obj = { lclMxCreateInput: [] };
+      this.loading = true
+      var objtmp = []
+      var obj = { lclMxCreateInput: [] }
       for (var key in this.dataSource) {
         this.dataSource[key].forEach(tmp => {
           if (tmp.PS > 0) {
             obj.lclMxCreateInput.push({
               ICMOInspectBillId: tmp.FID,
               SpelledQty: tmp.PS
-            });
+            })
           }
-        });
-      }
-      objtmp.push(obj);
-      DataAddOrPUT("RemainderLCL/Create", objtmp)
-        .then(res => {
-          console.log(res);
-          this.$notify({
-            title: "系统提示",
-            message: "修改成功",
-            type: "success"
-          });
-          _this.$emit("addSuccess");
-          this.hide();
-          this.loading = false;
         })
-        .catch(function() {
-          this.loading = false;
-        });
+      }
+      //
+      if (obj.lclMxCreateInput.length === 0) {
+        this.$notify.error({
+          title: '系统提示',
+          message: '请选择拼箱数量'
+        })
+        return
+      }
+      objtmp.push(obj)
+      DataAddOrPUT('RemainderLCL/Create', objtmp)
+        .then(res => {
+          console.log(res)
+          this.$notify({
+            title: '系统提示',
+            message: '修改成功',
+            type: 'success'
+          })
+          _this.$emit('addSuccess')
+          this.hide()
+          this.loading = false
+        })
+        .catch(function () {
+          this.loading = false
+        })
     }
   }
-};
+}
 </script>
 <style>
 .text {
