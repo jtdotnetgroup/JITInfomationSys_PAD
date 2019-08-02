@@ -58,18 +58,15 @@ export default {
               // 登录成功
               setTimeout(() => {
                 this.$router.push('/')
-                this.$router.push('/')
-              }, 500)
+              }, 100)
             })
             .catch(() => {
               Message.error('抱歉，服务器处理请求异常')
             }).finally(() => {
               // 登录失败
-              this.$message.error('抱歉，服务器处理请求异常')
-            })
-            .finally(() => {
               this.fullscreenLoading = false
             })
+            
         } else {
         }
       })

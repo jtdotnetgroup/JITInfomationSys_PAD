@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import axios from 'axios'
-import Vuex from 'vuex'
 import { Message } from 'element-ui'
 import { store } from '../store.js'
 // Vue.use(axios)
@@ -13,7 +12,7 @@ if (url.indexOf('http://222.72.134.71') >= 0) {
   baseURL = 'http://222.72.134.71:8093'
 } else if (url.indexOf('192.168.1') >= 0) {
   // baseURL = 'http://192.168.1.177:8088'
-  baseURL = 'http://192.168.1.215:8099'
+  baseURL = 'http://222.72.134.71:8093'
 } else if (url.indexOf('localhost') >= 0) {
   // 开发环境
   baseURL = 'http://localhost:21021'
@@ -31,7 +30,7 @@ const err = (error) => {
   console.log(error)
   if (error.response) {
     const data = error.response.data
-    const token = Vue.ls.get(ACCESS_TOKEN)
+    const token = store.state.account.accessToken
     if (error.response.status === 403) {
       console.log('抱歉，你没有权限操作！')
       Message.error('抱歉，你没有权限操作！')

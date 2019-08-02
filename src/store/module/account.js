@@ -32,7 +32,7 @@ const account = {
           var data = res.data
           if (!data.error) {
             localStorage.setItem('token', data.result.accessToken)
-            localStorage.setItem('name', data.result.userName)
+            localStorage.setItem('username', data.result.userName)
             // winForm.User = data.result.userName
             commit('UPDATE_ACCESSTOKEN', data.result.accessToken)
             commit('UPDATE_USERNAME', payload.username)
@@ -47,7 +47,7 @@ const account = {
       commit('UPDATE_USERNAME', '')
       commit('SET_PERMISSIONS', {})
       localStorage.removeItem('token')
-      localStorage.removeItem('name')
+      localStorage.removeItem('username')
     },
 
     GetInfo ({ commit }) {
