@@ -6,7 +6,7 @@ import { store } from '../store.js'
 // Vue.use(Vuex)
 Vue.prototype.$ajax = axios
 //
-var url = window.location.host
+var url = window.location.href
 var baseURL = ''
 if (url.indexOf('http://222.72.134.71') >= 0) {
   baseURL = 'http://222.72.134.71:8093'
