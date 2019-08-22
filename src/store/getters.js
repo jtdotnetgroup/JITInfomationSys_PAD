@@ -3,7 +3,7 @@ const getters = {
   token: state => {
     let token = state.account.accessToken
     if (!token) {
-      token = sessionStorage.getItem('token')
+      token = localStorage.getItem('token')
     }
     return token
   },

@@ -1,5 +1,4 @@
 import { login, GetUserInfo } from '@/api/account'
-import { resolve, reject } from 'q'
 
 const account = {
   namespaced: true,
@@ -26,8 +25,8 @@ const account = {
     }
   },
   actions: {
-    Login ({ commit }, payload) {
-      login(payload.username, payload.password)
+    async Login ({ commit }, payload) {
+      await login(payload.username, payload.password)
         .then(res => {
           var data = res.data
           if (!data.error) {
@@ -36,10 +35,12 @@ const account = {
             // winForm.User = data.result.userName
             commit('UPDATE_ACCESSTOKEN', data.result.accessToken)
             commit('UPDATE_USERNAME', payload.username)
-            resolve()
-          } else {
-            reject(data)
           }
+          let result = Promise.resolve(res)
+          return result
+        })
+        .catch(err => {
+          return Promise.reject(err)
         })
     },
     Logout ({ commit }) {
@@ -50,19 +51,18 @@ const account = {
       localStorage.removeItem('username')
     },
 
-    GetInfo ({ commit }) {
+    async GetInfo ({ commit }) {
       return new Promise((resolve, reject) => {
         GetUserInfo().then(response => {
           const result = response.data.result
-          console.log(result)
           if (result.auth.grantedPermissions) {
             commit('SET_PERMISSIONS', result.auth.grantedPermissions)
           } else {
-            reject(new Error('grantedPermissions must array'))
+            return reject(new Error('grantedPermissions must array'))
           }
-          resolve(result)
+          return resolve(result)
         }).catch(error => {
-          reject(error)
+          return reject(error)
         })
       })
     }

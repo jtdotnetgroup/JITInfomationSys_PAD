@@ -12,15 +12,18 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   var token = store.getters.token
+  console.log(token)
 
   if (token) {
     // 已登录
+    console.log('login')
     if (to.path === '/login') {
       // 如果访问的页面是登录页面，则跳转到首页
       next({ path: '/' })
     }
 
     // 检查权限
+    console.log(store.getters.permissions)
     if (!store.getters.permissions) {
       // 如果还没有获取权限信息，则获取权限信息
       store.dispatch('account/GetInfo')

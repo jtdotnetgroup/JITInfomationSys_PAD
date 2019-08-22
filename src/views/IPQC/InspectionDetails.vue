@@ -29,7 +29,7 @@
             plain
             round
             v-for="item in funmenu"
-            v-show="item.show && (scope.row.FStatus!=='已检验')"
+            v-show="item.show && (scope.row.FStatus!=='已检验')||item.title==='打印'"
             :key="item.num"
             @click="Handle(item.num,scope.$index, scope.row)"
             :type="item.type"
@@ -48,7 +48,8 @@
 <script>
 // 列
 // 数据处理
-import { GetAll } from '@/api/mission'
+import { GetAll,GetAll2 } from '@/api/mission'
+
 const column = [
   { id: 'FBillNo', label: '检验单号', width: 200, sort: false, align: 'center' },
   { id: 'Step', label: '工序', width: 80, sort: false, align: 'center' },
@@ -83,6 +84,13 @@ export default {
           type: '',
           num: 0,
           title: '质检明细',
+          show: true,
+          ShowWhe: ['report']
+        },
+        {
+          type: '',
+          num: 1,
+          title: '打印',
           show: true,
           ShowWhe: ['report']
         }
@@ -138,10 +146,25 @@ export default {
             query: obj
           })
           break
+        case 1:
+          this.Printing(row.FID);
+          break;
         // 默认提示功能尚未开发
         default:
           break
       }
+    },
+
+    Printing (fid) {
+      var obj = { FID: [fid] }
+      GetAll2('Printing/GetAllPrinting', obj)
+        .then(res => {
+          if (res.data.success) {
+             winForm.Preview(JSON.stringify(res.data.result[0]))
+          }
+        })
+        .catch(() => {})
+        .finally(() => {})
     },
     // 获取数据源
     GetDataSource (obj) {

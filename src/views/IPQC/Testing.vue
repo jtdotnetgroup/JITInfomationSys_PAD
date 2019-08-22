@@ -62,7 +62,8 @@ export default {
           title: "已检验",
           show: true,
           ShowWhe: ["DHB"]
-        }
+        },
+        
       ]
     };
   },
