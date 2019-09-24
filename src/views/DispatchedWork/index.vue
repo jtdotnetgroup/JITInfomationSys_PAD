@@ -3,30 +3,13 @@
   <!--主体-->
   <div class="fullscreen" v-loading.fullscreen.lock="fullscreenLoading">
     <!--头部-->
-    <tableHeader class="header" :title="title" :items="tabItems" @tabChange="handelTabChange"/>
+    <tableHeader class="header" :title="title" :items="tabItems" @tabChange="handelTabChange" />
     <!--表格-->
-    <el-table :data="tabledata" border stripe>
-      <el-table-column
-        v-for="col in columnHeader"
-        :prop="col.id"
-        :key="col.id"
-        :align="col.align"
-        :label="col.label"
-        :width="col.width"
-        v-show="false"
-      ></el-table-column>
+    <el-table :data="tabledata" border stripe :row-class-name="tableRowClassName">
+      <el-table-column v-for="col in columnHeader" :prop="col.id" :key="col.id" :align="col.align" :label="col.label" :width="col.width" v-show="false"></el-table-column>
       <el-table-column label="操作" align="center" fixed="right" width="300">
         <template slot-scope="scope">
-          <el-button
-            style="text-align: center"
-            plain
-            round
-            v-for="item in funmenu"
-            v-show="item.show"
-            :key="item.num"
-            @click="handle(item.num,scope.$index, scope.row)"
-            :type="item.type"
-          >{{item.title}}</el-button>
+          <el-button style="text-align: center" plain round v-for="item in funmenu" v-show="item.show" :key="item.num" @click="handle(item.num,scope.$index, scope.row)" :type="item.type">{{item.title}}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -41,21 +24,14 @@
       background
     ></el-pagination>-->
     <!-- 底部分页 -->
-    <Paging
-      :PageSize="pageSize"
-      :PageIndex="currentPage"
-      :TotalNum="totalNum"
-      @Refresh="GetData"
-      @RefreshPage="RefreshPage"
-      ref="Paging"
-    />
+    <Paging :PageSize="pageSize" :PageIndex="currentPage" :TotalNum="totalNum" @Refresh="GetData" @RefreshPage="RefreshPage" ref="Paging" />
     <!-- 底部分页 -->
     <!--其他页面模板-->
-    <OpenWork ref="OpenWork" @addSuccess="GetData"/>
-    <AbnormalReportList ref="AbnormalReportList" @addSuccess="GetData"/>
-    <Picking ref="Picking" @addSuccess="GetData"/>
-    <Report ref="Report" @addSuccess="GetData"/>
-    <ReportDetailed ref="ReportDetailed" @addSuccess="GetData"/>
+    <OpenWork ref="OpenWork" @addSuccess="GetData" />
+    <AbnormalReportList ref="AbnormalReportList" @addSuccess="GetData" />
+    <Picking ref="Picking" @addSuccess="GetData" />
+    <Report ref="Report" @addSuccess="GetData" />
+    <ReportDetailed ref="ReportDetailed" @addSuccess="GetData" />
     <!--弹框-->
   </div>
 </template>
@@ -134,6 +110,12 @@ export default {
   },
   // 声明方法
   methods: {
+    tableRowClassName ({ row, rowIndex }) {
+      if (row['IsYC'] === 1) {
+        return 'error-row'
+      }
+      return ''
+    },
     // 标题数量
     UpdCount () {
       var TaskQty = this.$store.state.TaskQty.TaskQty
@@ -340,3 +322,8 @@ export default {
   watch: {}
 }
 </script>
+<style>
+.el-table .error-row {
+  background: #901212;
+}
+</style>
