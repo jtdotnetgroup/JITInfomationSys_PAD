@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-96654c1e"],{"59be":function(e,t,n){},e08d:function(e,t,n){"use strict";var o=n("59be"),c=n.n(o);c.a},f90e:function(e,t,n){"use strict";n.r(t);var o=function(){var e=this,t=e.$createElement,n=e._self._c||t;return n("footer",{staticClass:"el-footer myfooter"},[e._v("技术支持：佛山市捷特科技有限公司")])},c=[],r={},s=r,u=(n("e08d"),n("2877")),a=Object(u["a"])(s,o,c,!1,null,"0d110775",null);t["default"]=a.exports}}]);
+//# sourceMappingURL=chunk-96654c1e.bb820e7d.js.map

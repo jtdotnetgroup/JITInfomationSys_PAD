@@ -7,17 +7,12 @@ import { store } from '../store.js'
 Vue.prototype.$ajax = axios
 //
 var url = window.location.href
-var baseURL = ''
-if (url.indexOf('http://222.72.134.71') >= 0) {
-  baseURL = 'http://222.72.134.71:8093'
-} else if (url.indexOf('192.168.1') >= 0) {
-  // baseURL = 'http://192.168.1.177:8088'
-  baseURL = 'http://222.72.134.71:8093'
-} else if (url.indexOf('localhost') >= 0) {
+var baseURL = 'http://116.236.156.186:8093'
+if (url.indexOf('localhost') >= 0) {
   // 开发环境
   baseURL = 'http://localhost:21021'
 } else {
-  baseURL = 'http://222.72.134.71:8093'
+  baseURL = baseURL
 }
 // console.log(baseURL)
 const http = axios.create({

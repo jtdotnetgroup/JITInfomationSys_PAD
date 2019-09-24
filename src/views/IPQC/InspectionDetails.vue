@@ -37,6 +37,7 @@
         </template>
       </el-table-column>
     </el-table>
+    <printLabelSelect ref="printLabelSelect" />
     <!-- 继续汇报 -->
     <!-- <div style="text-align:right;padding-top: 30px;">
       <el-button type="danger" @click="onSubmit()">新增</el-button>
@@ -50,7 +51,9 @@
 // 数据处理
 import { GetAll,GetAll2 } from '@/api/mission'
 
+
 const column = [
+  {id:'FIcmodispBillNo',label:"派工单号",width:200,sort:false,align:'center'},
   { id: 'FBillNo', label: '检验单号', width: 200, sort: false, align: 'center' },
   { id: 'Step', label: '工序', width: 80, sort: false, align: 'center' },
   { id: 'BatchNum', label: '批次号', width: 200, sort: false, align: 'center' },
@@ -101,7 +104,8 @@ export default {
   },
   // 组件
   components: {
-    tableHeader: () => import('@/components/tablePageHeader.vue')
+    tableHeader: () => import('@/components/tablePageHeader.vue'),
+    printLabelSelect:()=>import('@/components/PrintLabelSelect.vue')
   },
   // 所有方法
   methods: {
@@ -147,7 +151,7 @@ export default {
           })
           break
         case 1:
-          this.Printing(row.FID);
+          this.Printing(obj);
           break;
         // 默认提示功能尚未开发
         default:
@@ -155,16 +159,19 @@ export default {
       }
     },
 
-    Printing (fid) {
-      var obj = { FID: [fid] }
-      GetAll2('Printing/GetAllPrinting', obj)
-        .then(res => {
-          if (res.data.success) {
-             winForm.Preview(JSON.stringify(res.data.result[0]))
-          }
-        })
-        .catch(() => {})
-        .finally(() => {})
+    Printing (row) {
+      // var obj = { FID: [fid] }
+
+      // GetAll2('Printing/GetAllPrinting', obj)
+      //   .then(res => {
+      //     if (res.data.success) {
+      //       this.$refs.printLabelSelect.show()
+      //       //  winForm.Preview(JSON.stringify(res.data.result[0]))
+      //     }
+      //   })
+      //   .catch(() => {})
+      //   .finally(() => {})
+      this.$refs.printLabelSelect.getData(row);
     },
     // 获取数据源
     GetDataSource (obj) {
@@ -202,6 +209,11 @@ export default {
               tmp.BatchNum = item.batchNum
               DS.push(tmp)
             })
+
+            DS.forEach(row=>{
+              row.FIcmodispBillNo=_this.$route.query.FBillNo
+            })
+
             _this.DataSource = DS
 
             _this.tableHeader.tabItems.forEach(item => {

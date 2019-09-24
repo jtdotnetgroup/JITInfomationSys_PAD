@@ -74,13 +74,6 @@ export default {
       tabvalue: "receive", // 选中显示卡
       tableColumns: columns, // 表格的列
       funmenu: [
-        // {
-        //  type: '',
-        //  num: 0,
-        //  title: '汇报',
-        //  show: true,
-        //  ShowWhe: ['report']
-        // },
         {
           type: "",
           num: 1,

@@ -1,7 +1,7 @@
 <template>
   <div class="fullscreen">
     <!-- 栏目 -->
-    <tableHeader class="header" :title="title" :items="tabItems" @tabChange="handelTabChange"/>
+    <tableHeader class="header" :title="title" :items="tabItems" @tabChange="handelTabChange" />
     <!-- 输入框 -->
     <el-row style="background-color: white;
     padding: 20px 0px;">
@@ -22,7 +22,7 @@
           <div class="demo-input-suffix" style="line-height:40px;font-size: 20px;">工序：</div>
         </div>
       </el-col>
-      <el-col :span="4">
+      <el-col :span="2">
         <div class="grid-content">
           <div class="demo-input-suffix">
             <el-input v-model="from.Step" disabled="disabled" placeholder="请输入工序"></el-input>
@@ -34,10 +34,25 @@
           <div class="demo-input-suffix" style="line-height:40px;font-size: 20px;">批号：</div>
         </div>
       </el-col>
-      <el-col :span="4">
+      <el-col :span="2">
         <div class="grid-content">
           <div class="demo-input-suffix">
             <el-input v-model="from.BatchNum" disabled="disabled" placeholder="请输入批号"></el-input>
+          </div>
+        </div>
+      </el-col>
+      <el-col :span="2">
+        <div class="grid-content">
+          <div class="demo-input-suffix" style="line-height:40px;font-size: 20px;">标签类型：</div>
+        </div>
+      </el-col>
+      <el-col :span="2">
+        <div class="grid-content">
+          <div class="demo-input-suffix">
+            <el-select v-model="printType" placeholder>
+              <el-option label="半成品" value="bcp"></el-option>
+              <el-option label="成品" value="cp"></el-option>
+            </el-select>
           </div>
         </div>
       </el-col>
@@ -50,7 +65,13 @@
     </el-row>
     <!-- 所有项目列表 -->
     <el-row :gutter="0" class="bbtbt" v-loading="loading">
-      <el-col :span="8" class="btbt" v-for="(tmp,index2) in AllCol" :key="index2" style="overflow: auto; max-height: 70vh;">
+      <el-col
+        :span="8"
+        class="btbt"
+        v-for="(tmp,index2) in AllCol"
+        :key="index2"
+        style="overflow: auto; max-height: 70vh;"
+      >
         <!-- 项目名称以及数量 -->
         <div class="grid-content">
           <el-row :gutter="0" class="text-bule">
@@ -87,252 +108,276 @@
       </el-col>
     </el-row>
     <!-- 打开数字键盘 以及接受回调 -->
-    <Digital ref="Digital" @DigitalCallback="DigitalCallback"/>
+    <Digital ref="Digital" @DigitalCallback="DigitalCallback" />
   </div>
 </template>
 <script>
 // 数据处理
-import { GetMx, DataAddOrPUT, GetAll, GetAll2 } from '@/api/mission'
+import { GetMx, DataAddOrPUT, GetAll, GetAll2 } from "@/api/mission";
+import { ComputePrintLable } from "@/lib/computeLable";
 // 派工单页面
 export default {
-  name: 'IPQC',
-  data () {
+  name: "IPQC",
+  data() {
     return {
       loading: false,
-      title: '质检汇报',
-      tabItems: [{ title: '质检汇报', value: 'ZJHB', count: 0 }],
-      tabvalue: 'ZJHB',
+      title: "质检汇报",
+      tabItems: [{ title: "质检汇报", value: "ZJHB", count: 0 }],
+      tabvalue: "ZJHB",
+      printType: "",
       from: {
         FID: 0,
-        FBillNo: '',
+        FBillNo: "",
         FItemID: 0,
-        Step: '',
-        BatchNum: '',
+        Step: "",
+        BatchNum: "",
         汇报数: 0,
         FOperID: 0
       },
       AllCol: [
         {
-          ColKey: 'col1',
-          title1: '项目',
-          title2: '数量',
+          ColKey: "col1",
+          title1: "项目",
+          title2: "数量",
           Col: [
             {
-              key: 'FAuxQty',
-              type: '汇报数',
+              key: "FAuxQty",
+              type: "汇报数",
               num: 0,
-              typecolor: 'back',
-              numcolor: 'back',
+              typecolor: "back",
+              numcolor: "back",
               IsAddDel: false
             },
             {
-              key: 'FCheckAuxQty',
-              type: '检验数',
+              key: "FCheckAuxQty",
+              type: "检验数",
               num: 0,
-              typecolor: 'back',
-              numcolor: 'back',
+              typecolor: "back",
+              numcolor: "back",
               IsAddDel: true
             },
             {
-              key: 'FPassAuxQty',
-              type: '合格数',
+              key: "FPassAuxQty",
+              type: "合格数",
               num: 0,
-              typecolor: 'back',
-              numcolor: 'back',
+              typecolor: "back",
+              numcolor: "back",
               IsAddDel: false
             },
             {
-              key: 'FFailAuxQty',
-              type: '不合格',
+              key: "FFailAuxQty",
+              type: "不合格",
               num: 0,
-              typecolor: 'red',
-              numcolor: 'red',
+              typecolor: "red",
+              numcolor: "red",
               IsAddDel: true
             },
             {
-              key: 'BZS',
-              type: '单位包装数',
+              key: "BZS",
+              type: "单位包装数",
               num: this.$route.query.F_102,
-              typecolor: 'red',
-              numcolor: 'red',
+              typecolor: "red",
+              numcolor: "red",
               IsAddDel: false
             },
             {
-              key: 'FYSQty',
-              type: '余数',
+              key: "FYSQty",
+              type: "余数",
               num: 0,
-              typecolor: 'red',
-              numcolor: 'red',
+              typecolor: "red",
+              numcolor: "red",
               IsAddDel: false
             }
           ]
         },
         {
-          ColKey: 'col2',
-          title1: '不良判断',
-          title2: '数量',
+          ColKey: "col2",
+          title1: "不良判断",
+          title2: "数量",
           Col: [
             {
-              key: 'FFailAuxQtyP',
-              type: '工废',
+              key: "FFailAuxQtyP",
+              type: "工废",
               num: 0,
-              typecolor: 'back',
-              numcolor: 'back',
+              typecolor: "back",
+              numcolor: "back",
               IsAddDel: true
             },
             {
-              key: 'FFailAuxQtyM',
-              type: '料废',
+              key: "FFailAuxQtyM",
+              type: "料废",
               num: 0,
-              typecolor: 'back',
-              numcolor: 'back',
+              typecolor: "back",
+              numcolor: "back",
               IsAddDel: true
             },
             {
-              key: 'FPassAuxQtyP',
-              type: '工回',
+              key: "FPassAuxQtyP",
+              type: "工回",
               num: 0,
-              typecolor: 'red',
-              numcolor: 'red',
+              typecolor: "red",
+              numcolor: "red",
               IsAddDel: true
             },
             {
-              key: 'FPassAuxQtyM',
-              type: '料回',
+              key: "FPassAuxQtyM",
+              type: "料回",
               num: 0,
-              typecolor: 'red',
-              numcolor: 'red',
+              typecolor: "red",
+              numcolor: "red",
               IsAddDel: true
             }
           ]
         }
       ],
       TB_BadItemRelation: []
-    }
+    };
   },
   watch: {},
   components: {
-    tableHeader: () => import('@/components/tablePageHeader.vue'),
-    Digital: () => import('@/components/Common/Digital.vue')
+    tableHeader: () => import("@/components/tablePageHeader.vue"),
+    Digital: () => import("@/components/Common/Digital.vue")
   },
   // 所有方法
   methods: {
     // 增加
-    AddNum (key) {
+    AddNum(key) {
       this.AllCol.forEach(tmp => {
         tmp.Col.forEach(item => {
           if (item.key === key) {
-            item.num++
+            item.num++;
           }
-        })
-      })
-      this.IsTD(key)
+        });
+      });
+      this.IsTD(key);
     },
     // 删除
-    DelNum (key) {
+    DelNum(key) {
       this.AllCol.forEach(tmp => {
         tmp.Col.forEach(item => {
           if (item.key === key) {
-            item.num--
+            item.num--;
           }
-        })
-      })
-      this.IsTD(key)
+        });
+      });
+      this.IsTD(key);
     },
-    SetNum (key, num) {
+    SetNum(key, num) {
       this.AllCol.forEach(tmp => {
         tmp.Col.forEach(item => {
           if (item.key === key) {
-            item.num = num
+            item.num = num;
           }
-        })
-      })
+        });
+      });
     },
-    IsTD (key) {
+    IsTD(key) {
       if (
-        key === 'FCheckAuxQty' ||
-        key === 'FPassAuxQty' ||
-        key === 'FFailAuxQty'
+        key === "FCheckAuxQty" ||
+        key === "FPassAuxQty" ||
+        key === "FFailAuxQty" 
+        
       ) {
         // 检验数
         var FCheckAuxQty = this.AllCol[0].Col.filter(t => {
-          return t.key === 'FCheckAuxQty'
-        })[0].num
+          return t.key === "FCheckAuxQty";
+        })[0].num;
         // 合格数
         // var FPassAuxQty = this.AllCol[0].Col.filter(t => {
         //   return t.key === 'FPassAuxQty'
         // })[0].num
         // 不合格数
+
         var FFailAuxQty = this.AllCol[0].Col.filter(t => {
-          return t.key === 'FFailAuxQty'
-        })[0].num
+          return t.key === "FFailAuxQty";
+        })[0].num;
         // 单位包装数
         var BZS = this.AllCol[0].Col.filter(t => {
-          return t.key === 'BZS'
-        })[0].num
+          return t.key === "BZS";
+        })[0].num;
 
-        this.SetNum('FYSQty', (FCheckAuxQty * 1 - FFailAuxQty * 1) % BZS)
-        this.SetNum('FPassAuxQty', FCheckAuxQty * 1 - FFailAuxQty * 1)
+        this.SetNum("FYSQty", (FCheckAuxQty * 1 - FFailAuxQty * 1) % BZS);
+        this.SetNum("FPassAuxQty", FCheckAuxQty * 1 - FFailAuxQty * 1);
       }
     },
     // 打开键盘
-    DigitalOpen (value, IsAddDel) {
+    DigitalOpen(value, IsAddDel) {
       if (IsAddDel) {
         var obj = {
-          width: '30%',
+          width: "30%",
           num: value.num,
           title: value.type,
-          placeholder: '当前数量' + value.num,
+          placeholder: "当前数量" + value.num,
           key: value.key
-        }
-        this.$refs.Digital.show(obj)
+        };
+        this.$refs.Digital.show(obj);
       }
     },
     // 键盘回调
-    DigitalCallback (obj) {
+    DigitalCallback(obj) {
+      if (obj.key == "FCheckAuxQty") {
+        if (obj.num > this.AllCol[0].Col[0].num) {
+          obj.num = this.AllCol[0].Col[0].num;
+        }
+      }
+
       this.AllCol.forEach(item => {
         item.Col.forEach(tmp => {
           if (tmp.key === obj.key) {
-            tmp.num = obj.num * 1
+            tmp.num = obj.num * 1;
           }
-        })
-      })
-      this.$refs.Digital.hide()
-      this.IsTD(obj.key)
+        });
+      });
+      this.$refs.Digital.hide();
+      this.IsTD(obj.key);
     },
     // 获取不良项目列表
-    GetTB_BadItemRelation () {
-      var _this = this
-      _this.loading = true
+    GetTB_BadItemRelation() {
+      var _this = this;
+      _this.loading = true;
       // 0 false ,1 true
-      GetAll('TB_BadItemRelation/GetAll', {})
+      GetAll("TB_BadItemRelation/GetAll", {})
         .then(res => {
-          var result = res.data.result
+          var result = res.data.result;
+
+          result.forEach(item => {
+            item.keyword="BadItemRelation"
+          });
+
           // console.log(result)
-          _this.TB_BadItemRelation = result
-          _this.AllCol[2].Col.push()
+          _this.TB_BadItemRelation = result;
+          _this.AllCol[2].Col.push();
         })
-        .catch(function () {})
-        .finally(function () {
-          _this.loading = false
-          _this.Detailed()
-        })
+        .catch(function() {})
+        .finally(function() {
+          _this.loading = false;
+          _this.Detailed();
+        });
     },
     // 返回上一层
-    Cancel () {
-      this.$router.go(-1) // 返回上一层
+    Cancel() {
+      this.$router.go(-1); // 返回上一层
     },
     // 提交
-    OnSubmit () {
-      var _this = this
+    OnSubmit() {
+      var _this = this;
 
       if (_this.from.BatchNum.length === 0) {
         _this.$message({
           showClose: true,
-          message: '批号不能为空！',
-          type: 'warning'
-        })
+          message: "批号不能为空！",
+          type: "warning"
+        });
       }
+
+      if (!this.printType) {
+        this.$message({
+          message: "标签类型未选择",
+          type: "error"
+        });
+        return;
+      }
+
       // _this.loading = true;
       var obj = {
         icmoInspectBill: {
@@ -346,161 +391,161 @@ export default {
           fFailAuxQtyM: _this.AllCol[1].Col[1].num,
           fPassAuxQtyP: _this.AllCol[1].Col[2].num,
           fPassAuxQtyM: _this.AllCol[1].Col[3].num,
-          fNote: '',
+          fNote: "",
           fYSQty: this.$route.query.F_102 // 后台特殊处理
         },
         icQualityRptsList: []
-      }
+      };
       if (_this.AllCol.length > 2) {
         _this.AllCol[2].Col.forEach(item => {
           obj.icQualityRptsList.push({
             FID: 0,
             FItemID: item.key,
             FAuxQty: item.num,
-            FRemark: '',
-            FNote: ''
-          })
-        })
+            FRemark: "",
+            FNote: ""
+          });
+        });
       }
       // console.log(obj)
       // return;
-      DataAddOrPUT('ICMOInspectBill/ICMODispBillSave', obj)
+      DataAddOrPUT("ICMOInspectBill/ICMODispBillSave", obj)
         .then(res => {
           if (res.data.success) {
             _this.$message({
-              message: '提交成功',
-              type: 'success'
-            })
-            _this.Printing()
-            _this.Cancel()
+              message: "提交成功",
+              type: "success"
+            });
+            _this.Printing();
+            _this.Cancel();
           }
         })
-        .catch(function () {})
+        .catch(function() {})
         .finally(() => {
-          _this.loading = false
-        })
+          _this.loading = false;
+        });
     },
     // 获取明细
-    Detailed () {
-      var _this = this
-      _this.loading = true
+    Detailed() {
+      var _this = this;
+      _this.loading = true;
       var obj = {
         fid: this.from.FID,
         fItemID: this.from.FItemID,
         fOperID: this.from.FOperID
-      }
-      GetMx('ICMOInspectBill/ICMOInspectBillDetailed', obj)
+      };
+      GetMx("ICMOInspectBill/ICMOInspectBillDetailed", obj)
         .then(res => {
           // console.log(res);
           if (res.data.success) {
-            var result = res.data.result
-            var Bill = result.icmoInspectBill
-            var icQualityRptsList = result.icQualityRptsList
+            var result = res.data.result;
+            var Bill = result.icmoInspectBill;
+            var icQualityRptsList = result.icQualityRptsList;
             if (Bill.fAuxQty * 1 === 0) {
-              Bill.fAuxQty = _this.from.汇报数 * 1
+              Bill.fAuxQty = _this.from.汇报数 * 1;
             }
             var obj1 = {
-              ColKey: 'col1',
-              title1: '项目',
-              title2: '数量',
+              ColKey: "col1",
+              title1: "项目",
+              title2: "数量",
               Col: [
                 {
-                  key: 'FAuxQty',
-                  type: '汇报数',
+                  key: "FAuxQty",
+                  type: "汇报数",
                   num: Bill.fAuxQty * 1,
-                  typecolor: 'back',
-                  numcolor: 'back',
+                  typecolor: "back",
+                  numcolor: "back",
                   IsAddDel: false
                 },
                 {
-                  key: 'FCheckAuxQty',
-                  type: '检验数',
+                  key: "FCheckAuxQty",
+                  type: "检验数",
                   num: Bill.fCheckAuxQty * 1,
-                  typecolor: 'back',
-                  numcolor: 'back',
+                  typecolor: "back",
+                  numcolor: "back",
                   IsAddDel: true
                 },
                 {
-                  key: 'FPassAuxQty',
-                  type: '合格数',
+                  key: "FPassAuxQty",
+                  type: "合格数",
                   num: Bill.fPassAuxQty * 1,
-                  typecolor: 'back',
-                  numcolor: 'back',
+                  typecolor: "back",
+                  numcolor: "back",
                   IsAddDel: false
                 },
                 {
-                  key: 'FFailAuxQty',
-                  type: '不合格',
+                  key: "FFailAuxQty",
+                  type: "不合格",
                   num: Bill.fFailAuxQty * 1,
-                  typecolor: 'red',
-                  numcolor: 'red',
+                  typecolor: "red",
+                  numcolor: "red",
                   IsAddDel: true
                 },
                 {
-                  key: 'BZS',
-                  type: '单位包装数',
+                  key: "BZS",
+                  type: "单位包装数",
                   num: this.$route.query.F_102,
-                  typecolor: 'red',
-                  numcolor: 'red',
+                  typecolor: "red",
+                  numcolor: "red",
                   IsAddDel: false
                 },
                 {
-                  key: 'FYSQty',
-                  type: '余数',
+                  key: "FYSQty",
+                  type: "余数",
                   num: 0,
-                  typecolor: 'red',
-                  numcolor: 'red',
+                  typecolor: "red",
+                  numcolor: "red",
                   IsAddDel: false
                 }
               ]
-            }
+            };
             //
             var obj2 = {
-              ColKey: 'col2',
-              title1: '不良判断',
-              title2: '数量',
+              ColKey: "col2",
+              title1: "不良判断",
+              title2: "数量",
               Col: [
                 {
-                  key: 'FFailAuxQtyP',
-                  type: '工废',
+                  key: "FFailAuxQtyP",
+                  type: "工废",
                   num: Bill.fFailAuxQtyP * 1,
-                  typecolor: 'back',
-                  numcolor: 'back',
+                  typecolor: "back",
+                  numcolor: "back",
                   IsAddDel: true
                 },
                 {
-                  key: 'FFailAuxQtyM',
-                  type: '料废',
+                  key: "FFailAuxQtyM",
+                  type: "料废",
                   num: Bill.fFailAuxQtyM * 1,
-                  typecolor: 'back',
-                  numcolor: 'back',
+                  typecolor: "back",
+                  numcolor: "back",
                   IsAddDel: true
                 },
                 {
-                  key: 'FPassAuxQtyP',
-                  type: '工回',
+                  key: "FPassAuxQtyP",
+                  type: "工回",
                   num: Bill.fPassAuxQtyP * 1,
-                  typecolor: 'red',
-                  numcolor: 'red',
+                  typecolor: "red",
+                  numcolor: "red",
                   IsAddDel: true
                 },
                 {
-                  key: 'FPassAuxQtyM',
-                  type: '料回',
+                  key: "FPassAuxQtyM",
+                  type: "料回",
                   num: Bill.fPassAuxQtyM * 1,
-                  typecolor: 'red',
-                  numcolor: 'red',
+                  typecolor: "red",
+                  numcolor: "red",
                   IsAddDel: true
                 }
               ]
-            }
+            };
             //
             var obj3 = {
-              ColKey: 'col3',
-              title1: '项目',
-              title2: '数量',
+              ColKey: "col3",
+              title1: "项目",
+              title2: "数量",
               Col: []
-            }
+            };
             // 后台一起返回
             // icQualityRptsList.forEach(tmp => {
             //   if(_this.TB_BadItemRelation tmp.fItemID)
@@ -517,143 +562,150 @@ export default {
               this.GetTB_BadItemRelation_SeticQualityRptsList(
                 icQualityRptsList,
                 obj3
-              )
+              );
             } else {
               _this.TB_BadItemRelation.forEach(tmp => {
-                var IsShow = !tmp.fDeleted
-                var FItemID = tmp.fid
-                var FName = tmp.fName
-                var FAuxQty = 0
+                var IsShow = !tmp.fDeleted;
+                var FItemID = tmp.fid;
+                var FName = tmp.fName;
+                var FAuxQty = 0;
                 icQualityRptsList.forEach(item => {
                   if (item.fItemID === tmp.fid) {
-                    IsShow = true
-                    FAuxQty = item.fAuxQty
+                    IsShow = true;
+                    FAuxQty = item.fAuxQty;
                   }
-                })
+                });
                 if (IsShow) {
                   obj3.Col.push({
                     key: FItemID,
                     type: FName,
                     num: FAuxQty,
-                    typecolor: 'back',
-                    numcolor: 'back',
-                    IsAddDel: true
-                  })
+                    typecolor: "back",
+                    numcolor: "back",
+                    IsAddDel: true,
+                    keyword:tmp.keyword
+                  });
                 }
-              })
+              });
             }
             // console.log(_this.TB_BadItemRelation)
-            _this.AllCol = []
-            _this.AllCol = [obj1, obj2, obj3]
-            var nums = 0
+            _this.AllCol = [];
+            _this.AllCol = [obj1, obj2, obj3];
+            var nums = 0;
             _this.AllCol.forEach(e => {
               e.Col.forEach(tmp => {
-                nums++
-              })
-            })
+                nums++;
+              });
+            });
             _this.tabItems.forEach(item => {
-              item.count = item.value === _this.tabvalue ? nums : item.count
-            })
+              item.count = item.value === _this.tabvalue ? nums : item.count;
+            });
           }
-          _this.loading = false
+          _this.loading = false;
         })
-        .catch(function () {
-          _this.loading = false
-        })
+        .catch(function() {
+          _this.loading = false;
+        });
     },
     // 遍历不良项目
-    GetTB_BadItemRelation_SeticQualityRptsList (icQualityRptsList, obj3) {
-      var _this = this
+    GetTB_BadItemRelation_SeticQualityRptsList(icQualityRptsList, obj3) {
+      var _this = this;
       if (_this.AllCol.length > 2) {
-        return
+        return;
       }
-      _this.loading = true
+      _this.loading = true;
       // 0 false ,1 true
-      GetAll('TB_BadItemRelation/GetAll', {})
+      GetAll("TB_BadItemRelation/GetAll", {})
         .then(res => {
-          var result = res.data.result
-          _this.TB_BadItemRelation = result
+          var result = res.data.result;
+          _this.TB_BadItemRelation = result;
           _this.TB_BadItemRelation.forEach(tmp => {
-            var IsShow = tmp.fDeleted
-            var FItemID = tmp.fid
-            var FName = tmp.fName
-            var FAuxQty = 0
+            var IsShow = tmp.fDeleted;
+            var FItemID = tmp.fid;
+            var FName = tmp.fName;
+            var FAuxQty = 0;
             icQualityRptsList.forEach(item => {
               if (item.fItemID === tmp.fid) {
-                IsShow = true
-                FAuxQty = item.fAuxQty
+                IsShow = true;
+                FAuxQty = item.fAuxQty;
               }
-            })
+            });
             if (IsShow) {
               obj3.Col.push({
                 key: FItemID,
                 type: FName,
                 num: FAuxQty,
-                typecolor: 'back',
-                numcolor: 'back',
+                typecolor: "back",
+                numcolor: "back",
                 IsAddDel: true
-              })
+              });
             }
-          })
+          });
           if (_this.AllCol.indexof(obj3) >= 0) {
           } else {
-            _this.AllCol.push(obj3)
+            _this.AllCol.push(obj3);
           }
-          var nums = 0
+          var nums = 0;
           _this.AllCol.forEach(e => {
             e.Col.forEach(tmp => {
-              nums++
-            })
-          })
+              nums++;
+            });
+          });
           _this.tabItems.forEach(item => {
-            item.count = item.value === _this.tabvalue ? nums : item.count
-          })
+            item.count = item.value === _this.tabvalue ? nums : item.count;
+          });
         })
-        .catch(function () {
-          _this.loading = false
-        })
+        .catch(function() {
+          _this.loading = false;
+        });
     },
     //
-    handelTabChange (value) {},
-    sizeChange (value) {},
-    currentChange (value) {},
+    handelTabChange(value) {},
+    sizeChange(value) {},
+    currentChange(value) {},
     // 打印
-    Printing () {
-      var obj = { FID: [this.$route.query.FID] }
-      GetAll2('Printing/GetAllPrinting', obj)
+    Printing() {
+      var obj = { FID: [this.$route.query.FID] };
+
+      GetAll2("Printing/GetAllPrinting", obj)
         .then(res => {
           if (res.data.success) {
-             winForm.Preview(JSON.stringify(res.data.result[0]))
+            var result = {};
+            result.Labels = res.data.result[0]
+
+            result.PrintType = this.printType;
+            console.log(result);
+            winForm.Preview(JSON.stringify(result));
           }
         })
         .catch(() => {})
-        .finally(() => {})
+        .finally(() => {});
     }
   },
   // 页面渲染前 执行
-  created: function () {
-    this.from.FID = this.$route.query.FID
-    this.from.FItemID = this.$route.query.FItemID
-    this.from.Step = this.$route.query.Step
-    this.from.汇报数 = this.$route.query.FAuxQty
-    this.from.FOperID = this.$route.query.FOperID
-    this.from.BatchNum = this.$route.query.BatchNum
-    this.from.FBillNo = this.$route.query.FBillNo
-    this.GetTB_BadItemRelation()
-    this.Printing()
+  created: function() {
+    this.from.FID = this.$route.query.FID;
+    this.from.FItemID = this.$route.query.FItemID;
+    this.from.Step = this.$route.query.Step;
+    this.from.汇报数 = this.$route.query.FAuxQty;
+    this.from.FOperID = this.$route.query.FOperID;
+    this.from.BatchNum = this.$route.query.BatchNum;
+    this.from.FBillNo = this.$route.query.FBillNo;
+    this.GetTB_BadItemRelation();
+    // this.Printing();
   },
   //
   computed: {
-    columnHeader () {
+    columnHeader() {
       switch (this.tabvalue) {
-        case 'ZJHB': {
-          return this.tableColumns.ZJHB
+        case "ZJHB": {
+          return this.tableColumns.ZJHB;
         }
       }
-      return ''
+      return "";
     }
   }
-}
+};
 </script>
 
 <style >
