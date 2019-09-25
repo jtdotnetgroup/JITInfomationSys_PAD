@@ -5,40 +5,26 @@
     <!--头部-->
     <tableHeader class="header" :title="title" :items="tabItems" @tabChange="handelTabChange" />
     <!--表格-->
-    <el-table :data="tabledata" border stripe>
-      <el-table-column
-        v-for="col in columnHeader"
-        :prop="col.id"
-        :key="col.id"
-        :align="col.align"
-        :label="col.label"
-        :width="col.width"
-        v-show="false" :sortable="col.sort"
-      ></el-table-column>
+    <el-table :data="tabledata" border stripe :row-class-name="tableRowClassName">
+      <el-table-column v-for="col in columnHeader" :prop="col.id" :key="col.id" :align="col.align" :label="col.label" :width="col.width" v-show="false"></el-table-column>
       <el-table-column label="操作" align="center" fixed="right" width="300">
         <template slot-scope="scope">
-          <el-button
-            style="text-align: center"
-            plain
-            round
-            v-for="item in funmenu"
-            v-show="item.show"
-            :key="item.num"
-            @click="handle(item.num,scope.$index, scope.row)"
-            :type="item.type"
-          >{{item.title}}</el-button>
+          <el-button style="text-align: center" plain round v-for="item in funmenu" v-show="item.show" :key="item.num" @click="handle(item.num,scope.$index, scope.row)" :type="item.type">{{item.title}}</el-button>
         </template>
       </el-table-column>
     </el-table>
-   
-    <Paging
-      :PageSize="pageSize"
-      :PageIndex="currentPage"
-      :TotalNum="totalNum"
-      @Refresh="GetData"
-      @RefreshPage="RefreshPage"
-      ref="Paging"
-    />
+    <!-- <el-pagination
+      @size-change="sizeChange"
+      @current-change="currentChange"
+      :current-page="currentPage"
+      :page-sizes="[20, 40, 80, 100]"
+      :page-size="pageSize"
+      layout="prev, pager, next"
+      :total="totalNum"
+      background
+    ></el-pagination>-->
+    <!-- 底部分页 -->
+    <Paging :PageSize="pageSize" :PageIndex="currentPage" :TotalNum="totalNum" @Refresh="GetData" @RefreshPage="RefreshPage" ref="Paging" />
     <!-- 底部分页 -->
     <!--其他页面模板-->
     <OpenWork ref="OpenWork" @addSuccess="GetData" />
@@ -117,6 +103,12 @@ export default {
   },
   // 声明方法
   methods: {
+    tableRowClassName ({ row, rowIndex }) {
+      if (row['IsYC'] === 1) {
+        return 'error-row'
+      }
+      return ''
+    },
     // 标题数量
     UpdCount() {
       var TaskQty = this.$store.state.TaskQty.TaskQty;
@@ -321,3 +313,8 @@ export default {
   watch: {}
 };
 </script>
+<style>
+.el-table .error-row {
+  background: #901212;
+}
+</style>

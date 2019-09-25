@@ -87,19 +87,12 @@
         <div class="grid-content" v-for="(item, index) in tmp.Col" :key="index">
           <el-row :gutter="0" :class="(index%2 == 0)? 'text-gray':'text-white'">
             <el-col :span="12">
-              <div
-                :class="(index%2 == 0)? 'grid-content bt btr':'grid-content bt btrw'"
-                :style="'color:'+item.typecolor"
-              >{{item.type}}</div>
+              <div :class="(index%2 == 0)? 'grid-content bt btr':'grid-content bt btrw'" :style="'color:'+item.typecolor">{{item.type}}</div>
             </el-col>
             <el-col :span="12">
               <div class="grid-content bt">
                 <i class="el-icon-minus icon" v-show="item.IsAddDel" @click="DelNum(item.key)"></i>
-                <span
-                  :style="'color:'+item.numcolor"
-                  :id="item.key"
-                  @click="DigitalOpen(item,item.IsAddDel)"
-                >{{item.num}}</span>
+                <span :style="'color:'+item.numcolor" :id="item.key" @click="DigitalOpen(item,item.IsAddDel)">{{item.num}}</span>
                 <i class="el-icon-plus icon" v-show="item.IsAddDel" @click="AddNum(item.key)"></i>
               </div>
             </el-col>
@@ -271,7 +264,11 @@ export default {
         });
       });
     },
-    IsTD(key) {
+    IsTD (key) {
+      // 不合格数
+      var FFailAuxQty = this.AllCol[0].Col.filter(t => {
+        return t.key === 'FFailAuxQty'
+      })[0].num
       if (
         key === "FCheckAuxQty" ||
         key === "FPassAuxQty" ||
@@ -286,11 +283,6 @@ export default {
         // var FPassAuxQty = this.AllCol[0].Col.filter(t => {
         //   return t.key === 'FPassAuxQty'
         // })[0].num
-        // 不合格数
-
-        var FFailAuxQty = this.AllCol[0].Col.filter(t => {
-          return t.key === "FFailAuxQty";
-        })[0].num;
         // 单位包装数
         var BZS = this.AllCol[0].Col.filter(t => {
           return t.key === "BZS";
@@ -298,6 +290,21 @@ export default {
 
         this.SetNum("FYSQty", (FCheckAuxQty * 1 - FFailAuxQty * 1) % BZS);
         this.SetNum("FPassAuxQty", FCheckAuxQty * 1 - FFailAuxQty * 1);
+      }
+
+      // 不合格数量大于等于不良项目总和，不能小于
+      var tmp = this.AllCol.filter(item => item.ColKey === 'col3')
+      var total = 0
+      if (tmp.length > 0) {
+        if (tmp[0].Col[key] !== null) {
+          tmp[0].Col[key].forEach(t => {
+            total += t.num
+          })
+          if (FFailAuxQty < total) {
+            this.SetNum('FFailAuxQty', total)
+            this.IsTD('FFailAuxQty') // 模拟点击不合格数量
+          }
+        }
       }
     },
     // 打开键盘
