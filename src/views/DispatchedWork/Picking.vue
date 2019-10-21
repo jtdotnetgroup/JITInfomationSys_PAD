@@ -39,14 +39,11 @@ export default {
     Detailed (obj) {
       GetAll('ICException/Get', obj).then(
         res => {
-          console.log(res) // 返回对象
           if (res.status === 200) {
-            console.log(200) // 返回对象
             var result = res.data.result
           }
         },
         response => {
-          console.log('error')
         }
       )
     }

@@ -75,7 +75,6 @@ export default {
     // 标题数量
     UpdCount() {
       var TaskQty = this.$store.state.TaskQty.TaskQty;
-      console.log(TaskQty);
       this.tabItems.forEach(tmp => {
         TaskQty.forEach(item => {
           if (tmp.key === item.strKey) {
@@ -95,7 +94,7 @@ export default {
     sizeChange(value) {},
     currentChange(value) {},
     handle: function(type, index, row) {
-      console.log(row);
+      (row);
       var _this = this;
       //
       var obj = {
@@ -138,7 +137,7 @@ export default {
       _this.loading = true;
       DataPUT2("ICMODispBill/UpdateFStatus", obj)
         .then(res => {
-          console.log(res);
+          (res);
           if (res.status === 200) {
             _this.GetData();
             _this.$message({

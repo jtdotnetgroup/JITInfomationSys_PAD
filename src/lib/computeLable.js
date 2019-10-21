@@ -22,5 +22,6 @@ export function ComputePrintLable (printData, proDate) {
       item
     )
   }
+
   return list
 }

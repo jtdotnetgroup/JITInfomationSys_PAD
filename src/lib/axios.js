@@ -10,7 +10,8 @@ var url = window.location.href
 var baseURL = 'http://116.236.156.186:8093'
 if (url.indexOf('localhost') >= 0) {
   // 开发环境
-  baseURL = 'http://localhost:21021'
+  // baseURL = 'http://localhost:21021'
+  baseURL = 'http://116.236.156.186:8093'
 } else {
   baseURL = baseURL
 }
@@ -22,7 +23,6 @@ const http = axios.create({
 
 //
 const err = (error) => {
-  console.log(error)
   if (error.response) {
     const data = error.response.data
     const token = store.state.account.accessToken
@@ -46,11 +46,9 @@ const err = (error) => {
       Message.error('抱歉，服务器处理请求异常')
     }
     if (error.response.status === 400) {
-      console.log(data.error.details)
       Message.error(data.error.details)
     }
     if (error.response.status === 204) {
-      console.log(data.error.details)
       Message.error(data.error.details)
     }
   }

@@ -296,13 +296,21 @@ export default {
       var tmp = this.AllCol.filter(item => item.ColKey === 'col3')
       var total = 0
       if (tmp.length > 0) {
-        if (tmp[0].Col[key] !== null) {
-          tmp[0].Col[key].forEach(t => {
+        if (tmp[0] !== null) {
+          tmp[0].Col.forEach(t => {
             total += t.num
           })
+          var sel = tmp[0].Col.filter(f=>f.key+''===key+'')
+          if(sel.length!==0){
+             this.SetNum('FFailAuxQty', total)
+              this.IsTD('FFailAuxQty') // 模拟点击不合格数量
+             return
+          }
           if (FFailAuxQty < total) {
             this.SetNum('FFailAuxQty', total)
             this.IsTD('FFailAuxQty') // 模拟点击不合格数量
+          }else{
+             this.SetNum('FFailAuxQty', FFailAuxQty)
           }
         }
       }
@@ -677,11 +685,11 @@ export default {
       GetAll2("Printing/GetAllPrinting", obj)
         .then(res => {
           if (res.data.success) {
-            var result = {};
+            var printData=res.data.result[0];
+            const result = {};
             result.Labels = res.data.result[0]
-
             result.PrintType = this.printType;
-            console.log(result);
+            result.printEntries=ComputePrintLable(printData,this.bill.FBillTime)
             winForm.Preview(JSON.stringify(result));
           }
         })
@@ -710,6 +718,9 @@ export default {
         }
       }
       return "";
+    },
+    bill(){
+      return this.$route.query
     }
   }
 };

@@ -83,7 +83,6 @@ export default {
       this.loading = true
       DataAddOrPUT('ICException/CreateAndUpdate', this.from)
         .then(res => {
-          console.log(res)
           this.$notify({
             title: '系统提示',
             message: '修改成功',

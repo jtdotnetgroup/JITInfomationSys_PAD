@@ -133,7 +133,6 @@ export default {
       // this.from.汇报数 = this.$route.query.汇报数
       // this.from.FOperID = this.$route.query.FOperID
       // this.from.FBillNo = this.$route.query.FBillNo
-      console.log(index, row)
       obj.Step = this.$route.query.Step
       obj.FItemID = this.$route.query.FItemID
       obj.FOperID = this.$route.query.FOperID
@@ -217,7 +216,6 @@ export default {
             _this.DataSource = DS
 
             _this.tableHeader.tabItems.forEach(item => {
-              console.log(item.value)
               item.count =
                 item.value === _this.tabvalue ? DS.length : item.count
             })

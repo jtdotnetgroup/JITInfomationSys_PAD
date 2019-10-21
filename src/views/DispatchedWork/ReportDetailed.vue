@@ -17,7 +17,7 @@
             ，设备：{{from.设备}}，产品名称：{{from.产品名称}}，工序：{{from.工序}}，派工数：
             <span
               class="color_red"
-            >{{from.派工}}</span>
+            >{{from.派工数量}}</span>
           </div>
         </div>
       </el-col>
@@ -67,52 +67,52 @@
       <el-button @click="dialogVisible = false">取消</el-button>
     </div>
     <!-- 打开数字键盘 以及接受回调 -->
-    <Digital ref="Digital" @DigitalCallback="DigitalCallback"/>
-    <HBPC ref="HBPC" @addSuccess="GetDataSource"/>
+    <Digital ref="Digital" @DigitalCallback="DigitalCallback" />
+    <HBPC ref="HBPC" @addSuccess="GetDataSource" />
   </el-dialog>
 </template>
 <!-- 脚本 -->
 <script>
-
 // 数据处理
 import {
   GetAll,
   DataPUT,
   DataAddOrPUT,
   AddOrPUT,
-  DataAdd
-} from '@/api/mission'
+  DataAdd,
+  DataDel
+} from "@/api/mission";
 // 列
 const column = [
-  { id: 'fBillNo', label: '检验单号', width: 200, sort: false },
-  { id: 'FStatus', label: '状态', width: 90, sort: false },
-  { id: 'BatchNum', label: '批次号', width: 200, sort: false },
-  { id: 'FAuxQty', label: '汇报数', width: 90, sort: false },
-  { id: 'FCheckAuxQty', label: '检验数', width: 90, sort: false },
-  { id: 'FPassAuxQty', label: '合格数', width: 90, sort: false },
-  { id: 'FFailAuxQty', label: '不合格', width: 90, sort: false },
-  { id: 'FBillTime', label: '汇报日期', width: 160, sort: false },
-  { id: 'FInspector', label: '检验员', width: 100, sort: false },
-  { id: 'FInspectTime', label: '检验时间', width: 160, sort: false },
-  { id: 'FNote', label: '说明', sort: false }
-]
+  { id: "fBillNo", label: "检验单号", width: 200, sort: false },
+  { id: "FStatus", label: "状态", width: 90, sort: false },
+  { id: "BatchNum", label: "批次号", width: 200, sort: false },
+  { id: "FAuxQty", label: "汇报数", width: 90, sort: false },
+  { id: "FCheckAuxQty", label: "检验数", width: 90, sort: false },
+  { id: "FPassAuxQty", label: "合格数", width: 90, sort: false },
+  { id: "FFailAuxQty", label: "不合格", width: 90, sort: false },
+  { id: "FBillTime", label: "汇报日期", width: 160, sort: false },
+  { id: "FInspector", label: "检验员", width: 100, sort: false },
+  { id: "FInspectTime", label: "检验时间", width: 160, sort: false },
+  { id: "FNote", label: "说明", sort: false }
+];
 //
 export default {
   components: {
-    Digital: () => import('@/components/Common/Digital.vue'),
-    HBPC: () => import('@/views/DispatchedWork/HBPC.vue')
+    Digital: () => import("@/components/Common/Digital.vue"),
+    HBPC: () => import("@/views/DispatchedWork/HBPC.vue")
   },
-  data () {
+  data() {
     return {
       from: {
-        FID: '',
+        FID: "",
         HB: 0,
-        工序: '',
-        设备: '',
-        产品名称: '',
+        工序: "",
+        设备: "",
+        产品名称: "",
         派工: 0,
-        派工单号: '',
-        BatchNum: ''
+        派工单号: "",
+        BatchNum: ""
       },
       // 加载框
       loading: false,
@@ -120,209 +120,210 @@ export default {
       column,
       // 模态框样式
       FromStyle: {
-        width: '80%',
-        title: '汇报明细'
+        width: "80%",
+        title: "汇报明细"
       },
       // 是否显示当前窗体
       dialogVisible: false,
       // 操作功能
       funmenu: [
         {
-          type: '',
+          type: "",
           num: 0,
-          title: '修改',
+          title: "修改",
           show: true
         },
         {
-          type: '',
+          type: "",
           num: 1,
-          title: '删除',
+          title: "删除",
           show: true
         }
       ],
       // 数据源
       DataSource: []
-    }
+    };
   },
   // 所有方法
   methods: {
     // 键盘回调
-    DigitalCallback (obj) {
-      this.from.HB = obj.num
-      this.$refs.Digital.hide()
+    DigitalCallback(obj) {
+      this.from.HB = obj.num;
+      this.$refs.Digital.hide();
     },
     //
-    DigitalOpen () {
+    DigitalOpen() {
       var obj = {
-        width: '30%',
+        width: "30%",
         num: this.from.HB,
-        title: '汇报数',
-        placeholder: '当前数量' + this.from.HB,
+        title: "汇报数",
+        placeholder: "当前数量" + this.from.HB,
         key: 1
-      }
-      this.$refs.Digital.show(obj)
+      };
+      this.$refs.Digital.show(obj);
     },
-    handleClose () {
-      this.Hide()
+    handleClose() {
+      this.Hide();
     },
     // 显示窗体
-    Show (obj) {
-      this.dialogVisible = true
+    Show(obj) {
+      this.dialogVisible = true;
       // console.log("show" + obj);
-      this.from.FID = obj.FID
-      this.from.工序 = obj.工序
-      this.from.设备 = obj.设备
-      this.from.派工单号 = obj.派工单号
-      this.from.派工 = obj.派工
-      this.from.产品名称 = obj.产品名称
-      this.GetDataSource()
+      this.from.FID = obj.fid;
+      this.from.工序 = obj.工序;
+      this.from.设备 = obj.设备;
+      this.from.派工单号 = obj.派工单号;
+      this.from.派工数量 = obj.派工数量;
+      this.from.产品名称 = obj.产品名称;
+      this.GetDataSource();
     },
     // 隐藏窗体
-    Hide () {
-      this.dialogVisible = false
+    Hide() {
+      this.dialogVisible = false;
     },
     // 显示加载框
-    ShowLod () {
-      this.loading = true
+    ShowLod() {
+      this.loading = true;
     },
     // 隐藏加载框
-    HideLod () {
-      this.loading = false
+    HideLod() {
+      this.loading = false;
     },
     // 显示菜单
-    ShowMenu () {
+    ShowMenu() {
       this.funmenu.forEach(item => {
-        item.show = item.ShowWhe.indexOf('1') >= 0
-      })
+        item.show = item.ShowWhe.indexOf("1") >= 0;
+      });
     },
     // 点击操作
-    Handle: function (type, index, row) {
-      var _this = this
-      var obj = {}
-      console.log(index, row)
+    Handle: function(type, index, row) {
+      var _this = this;
+      var obj = {};
       switch (type) {
         // 修改
         case 0:
           obj = {
-            FID: row.Fid,
+            FID: row.fid,
             num: row.FAuxQty,
             BatchNum: row.BatchNum,
             fBillNo: row.fBillNo
-          }
-          console.log(obj)
-          _this.$refs.HBPC.show(obj)
-          break
+          };
+          _this.$refs.HBPC.show(obj);
+          break;
         // 删除
         case 1:
-          this.$confirm('确定要删除该汇报记录吗?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
+          this.$confirm("确定要删除该汇报记录吗?", "提示", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning"
           })
             .then(() => {
-              _this.ShowLod()
-              DataDel('ICMOInspectBill/Delete', { FID: row.FID })
+              _this.ShowLod();
+              DataDel("ICMOInspectBill/Delete", { FID: row.Fid })
                 .then(res => {
-                  if (res.success) {
-                    _this.GetDataSource(this.from)
-                    this.$message('删除成功')
+                  const data=res.data;
+                  if (data.success) {
+                    _this.GetDataSource(this.from);
+                    this.$message.success("删除成功");
                   } else {
-                    this.$message.error('删除失败，请稍后重试')
+                    this.$message.error("删除失败，请稍后重试");
                   }
-                  _this.HideLod()
+                  _this.HideLod();
                 })
-                .catch(function () {
-                  _this.HideLod()
-                })
+                .catch(function() {
+                  _this.HideLod();
+                });
             })
-            .catch(() => {})
-          break
+            .catch(() => {
+              this.HideLod();
+            });
+          break;
         // 默认提示功能尚未开发
         default:
-          break
+          break;
       }
     },
     // 汇报
-    onSubmit () {
-      var _this = this
+    onSubmit() {
+      var _this = this;
       if (_this.from.BatchNum.length === 0) {
-        this.$message.error('批次号不能为空！')
-        return
+        this.$message.error("批次号不能为空！");
+        return;
       }
-      this.$confirm('确认汇报该数量吗？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
+      this.$confirm("确认汇报该数量吗？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
       })
         .then(() => {
           var obj = {
             ICMODispBillID: _this.from.FID,
             FAuxQty: _this.from.HB,
             BatchNum: _this.from.BatchNum
-          }
-          _this.ShowLod()
-          DataAdd('ICMOInspectBill/Create', obj)
+          };
+          _this.ShowLod();
+          DataAdd("ICMOInspectBill/Create", obj)
             .then(res => {
               if (res.data.success) {
                 this.$notify({
-                  title: '系统提示',
-                  message: '添加汇报成功',
-                  type: 'success'
-                })
-                _this.from.HB = 0
-                _this.from.BatchNum = ''
-                _this.Hide()
-                _this.$emit('addSuccess')
+                  title: "系统提示",
+                  message: "添加汇报成功",
+                  type: "success"
+                });
+                _this.from.HB = 0;
+                _this.from.BatchNum = "";
+                _this.Hide();
+                _this.$emit("addSuccess");
               }
             })
-            .catch(function () {})
+            .catch(function() {});
         })
-        .catch(() => {})
+        .catch(() => {});
     },
     // 获取数据源
-    GetDataSource () {
-      var _this = this
-      var obj = { ICMODispBillID: this.from.FID }
-      _this.ShowLod()
+    GetDataSource() {
+      var _this = this;
+      var obj = { ICMODispBillID: this.from.FID };
+      _this.ShowLod();
       // obj 必须含有 任务单号ID
-      var url = 'ICMOInspectBill/GetList'
+      var url = "ICMOInspectBill/GetList";
       GetAll(url, obj)
         .then(res => {
           if (res.data.success) {
-            var DS = []
+            var DS = [];
             res.data.result.forEach(item => {
-              var tmp = {}
-              tmp.fBillNo = item.fBillNo
-              tmp.FStatus = item.fStatus === 0 ? '未完成' : '已完成'
-              tmp.FAuxQty = item.fAuxQty
-              tmp.FCheckAuxQty = item.fCheckAuxQty
-              tmp.FPassAuxQty = item.fPassAuxQty
-              tmp.FFailAuxQty = item.fFailAuxQty
+              var tmp = {};
+              tmp.fBillNo = item.fBillNo;
+              tmp.FStatus = item.fStatus === 0 ? "未完成" : "已完成";
+              tmp.FAuxQty = item.fAuxQty;
+              tmp.FCheckAuxQty = item.fCheckAuxQty;
+              tmp.FPassAuxQty = item.fPassAuxQty;
+              tmp.FFailAuxQty = item.fFailAuxQty;
               tmp.FBillTime = _this
                 .$moment(item.fBillTime)
-                .format('YYYY-MM-DD hh:mm')
-              tmp.FInspector = item.fInspector
+                .format("YYYY-MM-DD hh:mm");
+              tmp.FInspector = item.fInspector;
               tmp.FInspectTime =
                 item.fInspectTime === null
-                  ? ''
-                  : _this.$moment(item.fInspectTime).format('YYYY-MM-DD hh:mm')
-              tmp.FNote = item.fNote
-              tmp.Fid = item.fid
-              tmp.BatchNum = item.batchNum
-              DS.push(tmp)
-            })
-            _this.DataSource = DS
+                  ? ""
+                  : _this.$moment(item.fInspectTime).format("YYYY-MM-DD hh:mm");
+              tmp.FNote = item.fNote;
+              tmp.Fid = item.fid;
+              tmp.BatchNum = item.batchNum;
+              DS.push(tmp);
+            });
+            _this.DataSource = DS;
           }
-          _this.HideLod()
+          _this.HideLod();
         })
-        .catch(function () {
-          _this.HideLod()
-        })
+        .catch(function() {
+          _this.HideLod();
+        });
     }
   },
   // 页面渲染后 执行
-  mounted: function () {}
-}
+  mounted: function() {}
+};
 </script>
 <style>
 .icon {

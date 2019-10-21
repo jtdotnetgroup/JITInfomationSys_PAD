@@ -71,7 +71,6 @@ export default {
       _this.loading = true
       DataAddOrPUT('ICMaterialPicking/CreateOrUpdate', obj)
         .then(res => {
-          console.log(res)
           if (res.status === 200) {
             _this.$emit('addSuccess')
             _this.hide()
@@ -108,7 +107,6 @@ export default {
       _this.CLPC = []
       GetMx('ICMaterialPicking/Get', obj)
         .then(res => {
-          console.log(res) // 返回对象
           if (res.status === 200) {
             // console.log(200); // 返回对象
             var result = res.data.result

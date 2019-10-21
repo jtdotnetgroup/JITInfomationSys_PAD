@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 const columns = {
   receive: [{
     id: '派工单号',
@@ -25,14 +27,20 @@ const columns = {
     label: '生产日期',
     width: 120,
     sort: true,
-    align: 'center'
+    align: 'center',
+    formatter: function (row, column, cellValue, index) {
+      return moment(row.生产日期).format('YYYY-MM-DD')
+    }
   },
   {
     id: '制单日期',
     label: '制单日期',
     width: 120,
     sort: true,
-    align: 'center'
+    align: 'center',
+    formatter: function (row, column, cellValue, index) {
+      return moment(row.制单日期).format('YYYY-MM-DD')
+    }
   },
   {
     id: '产品名称',
@@ -53,11 +61,20 @@ const columns = {
     id: '计划开工/完工',
     label: '计划开工/完工',
     sort: true,
-    align: 'center'
+    align: 'center',
+    formatter: function (row, column, cellValue, index) {
+      return moment(row.计划开工日期).format('YYYY-MM-DD') + '/' + moment(row.计划完工日期).format('YYYY-MM-DD')
+    }
   },
   {
-    id: '派工',
+    id: '派工数量',
     label: '派工',
+    width: 120,
+    sort: true,
+    align: 'center'
+  }, {
+    id: 'fPackQty',
+    label: '包装数',
     width: 120,
     sort: true,
     align: 'center'
@@ -89,14 +106,19 @@ const columns = {
     width: 120,
     sort: true,
     align: 'center',
-    sortable: true
+    formatter: function (row, column, cellValue, index) {
+      return moment(row.生产日期).format('YYYY-MM-DD')
+    }
   },
   {
     id: '制单日期',
     label: '制单日期',
     width: 120,
     sort: true,
-    align: 'center'
+    align: 'center',
+    formatter: function (row, column, cellValue, index) {
+      return moment(row.制单日期).format('YYYY-MM-DD')
+    }
   },
   {
     id: '产品名称',
@@ -112,28 +134,35 @@ const columns = {
     align: 'center'
   },
   {
-    id: '派工',
+    id: '派工数量',
     label: '派工数',
     width: 120,
     sort: true,
     align: 'center'
   },
   {
-    id: '汇报',
+    id: 'fPackQty',
+    label: '包装数',
+    width: 120,
+    sort: true,
+    align: 'center'
+  },
+  {
+    id: '汇报数量',
     label: '汇报数',
     width: 120,
     sort: true,
     align: 'center'
   },
   {
-    id: '合格',
+    id: '合格数量',
     label: '合格',
     width: 120,
     sort: true,
     align: 'center'
   },
   {
-    id: '不合格',
+    id: '不合格数量',
     label: '不合格',
     width: 120,
     sort: true,

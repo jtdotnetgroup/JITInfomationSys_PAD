@@ -32,7 +32,7 @@ export default {
     }),
     RefreshTaskQty () {
       this.$store.dispatch('GetAllTaskQty', { StrKey: '*' })
-      console.log('s')
+      // console.log('s')
     },
     UpdateTaskQty () {
 

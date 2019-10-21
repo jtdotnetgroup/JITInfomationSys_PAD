@@ -6,10 +6,13 @@
     <tableHeader class="header" :title="title" :items="tabItems" @tabChange="handelTabChange" />
     <!--表格-->
     <el-table :data="tabledata" border stripe :row-class-name="tableRowClassName">
-      <el-table-column v-for="col in columnHeader" :prop="col.id" :key="col.id" :align="col.align" :label="col.label" :width="col.width" v-show="false"></el-table-column>
+      <el-table-column v-for="col in columnHeader" :prop="col.id" :key="col.id" :align="col.align" :label="col.label" 
+      :formatter="col.formatter"
+      :width="col.width" v-show="false"></el-table-column>
       <el-table-column label="操作" align="center" fixed="right" width="300">
         <template slot-scope="scope">
-          <el-button style="text-align: center" plain round v-for="item in funmenu" v-show="item.show" :key="item.num" @click="handle(item.num,scope.$index, scope.row)" :type="item.type">{{item.title}}</el-button>
+          <el-button style="text-align: center" plain round v-for="item in funmenu" v-show="item.show"
+           :key="item.num" @click="handle(item.num,scope.$index, scope.row)" :type="item.type">{{item.title}}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -61,13 +64,6 @@ export default {
       tableColumns: columns, // 表格的列
       funmenu: [
         {
-          type: "",
-          num: 1,
-          title: "领料",
-          show: true,
-          ShowWhe: ["receive"]
-        },
-        {
           type: "primary",
           num: 2,
           title: "开工",
@@ -104,7 +100,8 @@ export default {
   // 声明方法
   methods: {
     tableRowClassName ({ row, rowIndex }) {
-      if (row['IsYC'] === 1) {
+
+      if (!!row['isYC']) {
         return 'error-row'
       }
       return ''
@@ -130,7 +127,6 @@ export default {
     handle: function(type, index, row) {
       var _this = this;
       var obj = {};
-      console.log(index, row);
       switch (type) {
         // 汇报
         case 0:
@@ -153,7 +149,8 @@ export default {
           })
             .then(() => {
               _this.fullscreenLoading = true;
-              DataAddOrPUT("ICMODispBill/OpenWork", { FID: row.FID })
+              // console.log(row)
+              DataAddOrPUT("ICMODispBill/OpenWork", { FID: row.fid })
                 .then(res => {
                   if (res.data.success) {
                     this.$message({
@@ -181,7 +178,7 @@ export default {
           break;
         // 异常
         case 3:
-          obj = { FID: row.FID, FSrcID: row.FSrcID };
+          obj = { FID: row.fid, FSrcID: row.fsrcID };
           _this.$refs.AbnormalReportList.Show(obj);
           break;
         // 汇报明细
@@ -228,29 +225,38 @@ export default {
 
           var TableList = []; // 集合
 
+          let cols= this.tabvalue === "receive"?this.tableColumns.receive:this.tableColumns.report;
+          
           // 遍历返回集合 选取需要的
-          result.items.forEach(item => {
-            var TabaleObj = {}; // 对象
-            TabaleObj.fTranType = item.fTranType;
-            TabaleObj.派工单号 = item.派工单号;
-            TabaleObj.设备 = item.设备;
-            TabaleObj.产品名称 = item.产品名称;
-            TabaleObj.产品名称 = item.产品名称;
-            TabaleObj.规格型号 = item.规格型号;
-            TabaleObj.工序 = item.工序;
-            TabaleObj.生产日期 = this.$moment(item.生产日期).format('YYYY-MM-DD');
-            TabaleObj.制单日期=this.$moment(item.fBillTime).format('YYYY-MM-DD');
-            TabaleObj.派工 = item.派工数量;
-            TabaleObj.汇报 = item.汇报数量;
-            TabaleObj.合格 = item.合格数量;
-            TabaleObj.不合格 = item.不合格数量;
-            TabaleObj.FID = item.fid;
-            TabaleObj.FSrcID = item.fsrcID;
-            TabaleObj.班次 = item.班次;
-            TableList.push(TabaleObj);
-          });
+          // result.items.forEach(item => {
+          //   var TabaleObj = {}; // 对象
+
+          //   // columns.forEach(col => {
+              
+          //   // });
+
+          //   // TabaleObj.fTranType = item.fTranType;
+          //   TabaleObj.派工单号 = item.派工单号;
+          //   TabaleObj.设备 = item.设备;
+          //   TabaleObj.产品名称 = item.产品名称;
+          //   TabaleObj.产品名称 = item.产品名称;
+          //   TabaleObj.规格型号 = item.规格型号;
+          //   TabaleObj.工序 = item.工序;
+          //   TabaleObj.生产日期 = this.$moment(item.生产日期).format('YYYY-MM-DD');
+          //   TabaleObj.制单日期=this.$moment(item.fBillTime).format('YYYY-MM-DD');
+          //   TabaleObj.派工 = item.派工数量;
+          //   TabaleObj.汇报 = item.汇报数量;
+          //   TabaleObj.合格 = item.合格数量;
+          //   TabaleObj.不合格 = item.不合格数量;
+          //   TabaleObj.FID = item.fid;
+          //   TabaleObj.FSrcID = item.fsrcID;
+          //   TabaleObj.班次 = item.班次;
+          //   TabaleObj.isYC=item.isYC;
+          //   TableList.push(TabaleObj);
+          // });
           // 重新渲染列表
-          this.tabledata = TableList;
+          // this.tabledata = TableList;
+          this.tabledata=result.items;
           //
           this.tabItems.forEach(item => {
             item.count =
@@ -261,22 +267,6 @@ export default {
         .finally(() => {
           loading.close();
         });
-    },
-    TestData() {
-      var TabaleObj = {}; // 对象
-      TabaleObj.fTranType = 1;
-      TabaleObj.派工单号 = 3213;
-      TabaleObj.设备 = 4132431;
-      TabaleObj.产品名称 = 4321;
-      TabaleObj.产品名称 = 432;
-      TabaleObj.规格型号 = 5234;
-      TabaleObj.工序 = 5364;
-      TabaleObj.生产日期 = 7654;
-      TabaleObj.派工 = 7654;
-      TabaleObj.汇报 = 7654;
-      TabaleObj.FID = 7654;
-      TabaleObj.FSrcID = 5634;
-      this.tabledata.push(TabaleObj);
     },
     // 显示菜单
     showmenu() {
@@ -315,6 +305,7 @@ export default {
 </script>
 <style>
 .el-table .error-row {
-  background: #901212;
+  background: #f05b5b;
+  color: #fff
 }
 </style>
