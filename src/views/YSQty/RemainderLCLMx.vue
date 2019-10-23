@@ -36,11 +36,13 @@
     </div>
 
     <div style="text-align: right; padding-top: 25px;">
+      <el-button @click="OpenPring()">打印标签</el-button>
       <el-button type="success" @click="onSubmit('OK')">确认</el-button>
       <el-button @click="AbnormalReport = false">取消</el-button>
     </div>
     <!-- 打开数字键盘 以及接受回调 -->
-    <Digital ref="Digital" @DigitalCallback="DigitalCallback" />
+    <Digital ref="Digital" @DigitalCallback="DigitalCallback" /> 
+    <printLabelSelect ref="printLabelSelect" />
   </el-dialog>
 </template>
 
@@ -50,16 +52,22 @@ import { GetAll, DataAddOrPUT } from '@/api/mission'
 export default {
   name: 'LCL',
   components: {
-    Digital: () => import('@/components/Common/Digital.vue')
+    Digital: () => import('@/components/Common/Digital.vue'),
+    printLabelSelect:()=>import('@/components/PrintLabelSelect.vue')
   },
   data () {
     return {
       loading: false,
       AbnormalReport: false,
-      dataSource: {}
+      dataSource: {},
+      olddataSource:[]
     }
   }, // 声明方法
   methods: {
+    OpenPring(){
+        
+        this.$refs.printLabelSelect.getData(this.olddataSource)
+    },
     getSummaries (param) {
       const { columns, data } = param
       const sums = []
@@ -122,9 +130,9 @@ export default {
       this.$refs.Digital.hide()
     },
     show (obj) {
+      this.olddataSource=obj
       this.AbnormalReport = true
-      this.dataSource = {}
-      console.log(obj)
+      this.dataSource = {} 
       for (var i = 0; i < obj.length; i++) {
         var ai = obj[i]
         ai.PS = 0

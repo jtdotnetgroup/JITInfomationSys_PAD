@@ -169,8 +169,8 @@ export default {
       //     }
       //   })
       //   .catch(() => {})
-      //   .finally(() => {})
-      this.$refs.printLabelSelect.getData(row);
+      //   .finally(() => {}) 
+      this.$refs.printLabelSelect.getData([row]);
     },
     // 获取数据源
     GetDataSource (obj) {

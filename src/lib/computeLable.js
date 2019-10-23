@@ -2,7 +2,11 @@ import moment from 'moment'
 
 export function ComputePrintLable (printData, proDate) {
   let { packQty, printQty } = printData
+  if (packQty * 1 === 0) {
+    return []
+  }
   let count = Math.ceil(printQty / packQty)
+
   let lastQty = printQty % packQty
   const list = []
 

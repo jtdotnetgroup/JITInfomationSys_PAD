@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="选择需要打印的标签" :visible.sync="visiable" width="80%" @close="handelClose">
+  <el-dialog title="选择需要打印的标签" :visible.sync="visiable" width="80%" append-to-body="true" @close="handelClose">
     <div id="printType">
       标签类型：
       <el-select v-model="printType" placeholder>
@@ -81,15 +81,19 @@ export default {
     show() {
       this.visiable = true;
     },
-    getData(bill) {
-      var obj = { FID: [bill.FID] };
+    getData(bill) { 
+      var id = []
+      bill.forEach(item => { 
+        id.push(item.FID)
+      });
+      var obj = { FID: id };
       this.billData = bill;
 
       GetAll2("Printing/GetAllPrinting", obj)
         .then(res => {
           if (res.data.success) {
             this.show();
-            this.printData = res.data.result[0];
+            this.printData = res.data.result;
           }
         })
         .catch(() => {})
@@ -101,7 +105,13 @@ export default {
   },
   computed: {
     labelList() {
-      return ComputePrintLable(this.printData, this.billData.FBillTime);
+      var tmp = []
+      this.printData.forEach((item,index)=>{ 
+          ComputePrintLable(item, this.billData[index].FBillTime).forEach(element => {
+            tmp.push(element);
+          }); 
+      }) 
+       return tmp
     }
   }
 };
