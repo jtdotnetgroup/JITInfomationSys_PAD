@@ -14,8 +14,8 @@ const store = {
   },
   //
   actions: {
-    GetAllTaskQty ({ commit }, params) {
-      GetAll('Common/GetTaskQty', { StrKey: params.StrKey }).then(res => {
+    async GetAllTaskQty ({ commit }, params) {
+      await GetAll('Common/GetTaskQty', { StrKey: params.StrKey }).then(res => {
         if (res.data.success) {
           var result = res.data.result
           commit('SET_TASKQTY', result)

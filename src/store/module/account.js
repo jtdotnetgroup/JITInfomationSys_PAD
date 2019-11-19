@@ -1,4 +1,5 @@
 import { login, GetUserInfo } from '@/api/account'
+import { async } from 'q'
 
 const account = {
   namespaced: true,
@@ -52,17 +53,17 @@ const account = {
     },
 
     async GetInfo ({ commit }) {
-      return new Promise((resolve, reject) => {
-        GetUserInfo().then(response => {
+      return new Promise(async (resolve, reject) => {
+        await GetUserInfo().then(response => {
           const result = response.data.result
           if (result.auth.grantedPermissions) {
             commit('SET_PERMISSIONS', result.auth.grantedPermissions)
           } else {
-            return reject(new Error('grantedPermissions must array'))
+            reject(new Error('grantedPermissions must array'))
           }
-          return resolve(result)
+          resolve(result)
         }).catch(error => {
-          return reject(error)
+          reject(error)
         })
       })
     }

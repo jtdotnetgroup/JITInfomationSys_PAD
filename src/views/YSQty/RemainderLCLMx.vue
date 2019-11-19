@@ -4,7 +4,7 @@
     :visible.sync="AbnormalReport"
     width="50%"
     v-loading="loading"
-    append-to-body="true"
+    :append-to-body="true"
   >
     <div v-for="(item,key,index) in dataSource" :key="item">
       <el-card class="box-card" :key="index">

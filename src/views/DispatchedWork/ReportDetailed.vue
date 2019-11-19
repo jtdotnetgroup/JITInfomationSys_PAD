@@ -98,6 +98,7 @@ const column = [
 ];
 //
 export default {
+  name:'ReportDetailed',
   components: {
     Digital: () => import("@/components/Common/Digital.vue"),
     HBPC: () => import("@/views/DispatchedWork/HBPC.vue")
@@ -203,7 +204,7 @@ export default {
         // 修改
         case 0:
           obj = {
-            FID: row.fid,
+            FID: row.Fid,
             num: row.FAuxQty,
             BatchNum: row.BatchNum,
             fBillNo: row.fBillNo

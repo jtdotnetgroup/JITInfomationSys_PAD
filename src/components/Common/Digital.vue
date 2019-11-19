@@ -1,6 +1,6 @@
 <template>
   <!-- 模态框 -->
-  <el-dialog :title="from.title" :visible.sync="Report" :width="from.width" append-to-body="true" style="text-align:center">
+  <el-dialog :title="from.title" :visible.sync="Report" :width="from.width" :append-to-body="true" style="text-align:center">
     <!-- 输入键盘 -->
     <el-form ref="form" :model="from">
       <el-form-item label>

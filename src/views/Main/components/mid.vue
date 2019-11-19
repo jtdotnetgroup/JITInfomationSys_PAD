@@ -44,8 +44,8 @@ export default {
       setInterval(this.RefreshTaskQty, 15000)
     })
   },
-  beforeCreate () {
-    this.$store.dispatch('GetAllTaskQty', { StrKey: '*' })
+  async beforeCreate () {
+   await this.$store.dispatch('GetAllTaskQty', { StrKey: '*' })
   },
   created () {
     // var TaskQty = this.$store.state.TaskQty.TaskQty

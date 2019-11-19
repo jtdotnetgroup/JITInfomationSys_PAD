@@ -4,7 +4,7 @@
     :visible.sync="AbnormalReport"
     width="70%"
     v-loading="loading"
-    append-to-body="true"
+    :append-to-body="true"
   >
     <!-- 表格 -->
     <el-table :data="tabledata" border stripe ref="multipleTable">

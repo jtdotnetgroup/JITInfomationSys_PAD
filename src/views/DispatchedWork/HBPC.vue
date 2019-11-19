@@ -1,6 +1,6 @@
 <template>
   <!-- 模态框 -->
-  <el-dialog
+  <el-dialog :append-to-body="true"
     :title="FormStyle.title"
     :visible.sync="FormStyle.dialogVisible"
     :width="FormStyle.width"
@@ -40,6 +40,7 @@ import {
   DataPUT2
 } from '@/api/mission'
 export default {
+  name:'HBPC',
   components: {
     Digital: () => import('@/components/Common/Digital.vue')
   },

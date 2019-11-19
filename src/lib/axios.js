@@ -13,8 +13,9 @@ if (url.indexOf('localhost') >= 0) {
   // baseURL = 'http://localhost:21021'
   baseURL = 'http://116.236.156.186:8093'
 } else {
-  baseURL = baseURL
+  // baseURL = baseURL
 }
+// baseURL = 'http://localhost:21021'
 // console.log(baseURL)
 const http = axios.create({
   baseURL: baseURL,
@@ -42,7 +43,6 @@ const err = (error) => {
       }
     }
     if (error.response.status === 500) {
-      console.log('抱歉，服务器处理请求异常')
       Message.error('抱歉，服务器处理请求异常')
     }
     if (error.response.status === 400) {
